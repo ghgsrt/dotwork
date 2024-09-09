@@ -4,6 +4,7 @@ const art = defineCollection({
 	type: 'content',
 	// Type-check frontmatter using a schema
 	schema: z.object({
+		id: z.string(),
 		title: z.string(),
 		description: z.string(),
 		inStock: z.boolean(),
