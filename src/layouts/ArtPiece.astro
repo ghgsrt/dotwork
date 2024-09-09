@@ -1,0 +1,31 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import FormattedDate from '../components/FormattedDate.astro';
+import Section from './Section.astro';
+import Image from '../components/Image.astro';
+
+type Props = CollectionEntry<'art'>['data'];
+
+const { id, title, description, inStock, price, image } = Astro.props;
+console.log(!!image)
+---
+
+<Section title={title} description={description}>
+	<article>
+		<div class="hero-image">
+			{<Image width={1020} height={510} src={image} alt="" />}
+			
+		</div>
+		<div class="product-info">
+
+		</div>
+	</article>
+</Section>
+
+<style>
+	article {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+	}
+</style>
