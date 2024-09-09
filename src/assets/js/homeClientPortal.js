@@ -5,11 +5,12 @@ const portal = document.createElement('div');
 portal.setAttribute('id', 'admin-portal');
 portal.innerHTML = 'HOME';
 
-const form = document.createElement('form');
-form.setAttribute('method', 'POST');
+const headerForm = document.createElement('form');
+headerForm.setAttribute('method', 'POST');
 
-const error = document.createElement('p');
+const headerError = document.createElement('p');
 
+const headerInput = document.createElement('input')
 
 
 form.addEventListener('submit', async (event) => {

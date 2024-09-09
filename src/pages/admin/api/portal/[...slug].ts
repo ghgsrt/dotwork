@@ -1,6 +1,6 @@
-import { GetPortal, PostPortal } from '../../../../assets/portal';
+// import { GetPortal, PostPortal } from '../../../../assets/portal';
 
-export const GET = GetPortal;
-export const POST = PostPortal;
+// export const GET = GetPortal;
+// export const POST = PostPortal;
 
-export const prerender = false;
+// export const prerender = false;
