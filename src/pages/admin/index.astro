@@ -1,17 +1,32 @@
 ---
+import Section from "../../layouts/Section.astro";
+
 
 ---
 
-<form id="admin-login" method="POST" action="adminLogin">
+<Section>
+	<p id="form-error"></p>
+	<form id="admin-login" method="POST" action="adminLogin">
+</Section>
 
 </form>
 
 <script>
-	const form = document.getElementById('admin-login');
+	const form = document.getElementById('admin-login')! as HTMLFormElement;
+	const error = document.getElementById('form-error')!;
 
-	form?.addEventListener('submit', async (event) => {
+	form.addEventListener('submit', async (event) => {
 		event.preventDefault();
 
-		
+		const response = await fetch(`/admin/api/${form.action}`, {
+			method: form.method,
+			body: new FormData(form)
+		});
+
+		if (response.ok) {
+			window.location.href = "/";
+		} else {
+			error.innerText = (await response.json()).error;
+		}
 	});
 </script>

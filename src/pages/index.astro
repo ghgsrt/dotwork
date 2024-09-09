@@ -4,9 +4,30 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import Section from '../layouts/Section.astro';
+import Shop from '../components/Shop.astro';
 ---
 
 <!-- <!doctype html> -->
 <Section title={SITE_TITLE} description={SITE_DESCRIPTION}>
-	
+	<Shop />
+	<div>
+		<form class="hide" data-netlify="true">
+			<input name="header" />
+			<input type="hidden" name="form-name" value="cms-header" />
+		</form>
+		<form class="hide" data-netlify="true">
+			<input name="description" />
+			<input type="hidden" name="form-name" value="cms-description" />
+		</form>
+		<form class="hide" data-netlify="true">
+			<input name="name" />
+			<input name="description" />
+			<input name="price" />
+			<input name="quantity" />
+			<input type="file" name="image-1" />
+			<input type="file" name="image-2" />
+			<input type="file" name="image-3" />
+			<input type="hidden" name="form-name" value="cms-createProduct" />
+		</form>
+	</div>
 </Section>

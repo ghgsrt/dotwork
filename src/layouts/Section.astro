@@ -2,9 +2,9 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import FormattedDate from '../components/FormattedDate.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 
-type Props = { title: string, description: string };
+type Props = { title?: string, description?: string };
 
 const {title, description} = Astro.props;
 
@@ -12,38 +12,54 @@ const {title, description} = Astro.props;
 
 <html lang="en">
 	<head>
-		<BaseHead title={title} description={description} />
+		<BaseHead title={title ?? SITE_TITLE} description={description ?? SITE_DESCRIPTION} />
 		<style>
-			body {
-				min-height: 100vh;
-				display: flex;
-				flex-direction: column;
-			}
-			main {
-				flex: 1;
-				/* display: flex;
-				flex-direction: column;
-				align-items: center; */
-				width: 60rem;
-				margin: 0 auto;
-			}
 			.heading {
 				display: flex;
 				flex-direction: column;
 				align-items: center;
 			}
 		</style>
+		<script>
+			let portalHasBeenFetched = false;
+			window.addEventListener('keydown', (event) => {
+				if (event.key === 'Escape') {
+					if (!portalHasBeenFetched)
+						fetch(`/admin/api/portal${window.location.pathname}`).then(async (response) => {
+							if (!response.ok) return false;
+
+							return await response.blob();
+						}).then((myBlob) => {
+							if (myBlob === false) return;
+
+							const objectURL = URL.createObjectURL(myBlob);
+							const sc = document.createElement("script");
+
+							sc.setAttribute("src", objectURL);
+							sc.setAttribute("type", "text/javascript");
+
+							document.head.appendChild(sc);
+
+							portalHasBeenFetched = true;
+						});
+
+					document.getElementById('admin-portal')?.classList.toggle('hide');
+				}
+			})
+		</script>
 	</head>
 
 	<body>
-		<Header />
-		<main>
-			<div class='heading'>
-				<h1>{title}</h1>
-				<p>{description}</p>
-			</div>
-			<slot />
-		</main>
-		<Footer />
+		<div>
+			<Header />
+			<main>
+				{title && <div class='heading'>
+					<h1>{title}</h1>
+					{description && <p>{description}</p>}
+					<slot />
+				</div>}
+			</main>
+			<Footer />
+		</div>
 	</body>
 </html>
