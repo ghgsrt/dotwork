@@ -17,6 +17,7 @@ const GetPortal = async (
 
 	const path = request.url.split('/');
 	const target = path.pop() || path.pop()!;
+	console.log(target)
 	const jsFilePrefix =
 		target === 'portal'
 			? 'home'
@@ -84,6 +85,6 @@ const portal = async (request: Request, context: Context) => {
 export default portal;
 
 export const config: Config = {
-	path: ['/admin/api/portal/*'],
+	path: ['/admin/api/portal', '/admin/api/portal/*'],
 	method: ['GET', 'POST'],
 };

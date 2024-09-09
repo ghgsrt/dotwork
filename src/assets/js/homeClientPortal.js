@@ -10,10 +10,9 @@ headerForm.setAttribute('method', 'POST');
 
 const headerError = document.createElement('p');
 
-const headerInput = document.createElement('input')
+const headerInput = document.createElement('input');
 
-
-form.addEventListener('submit', async (event) => {
+headerForm.addEventListener('submit', async (event) => {
 	event.preventDefault();
 
 	const response = await fetch(`/admin/api/portal${window.location.pathname}`, {
