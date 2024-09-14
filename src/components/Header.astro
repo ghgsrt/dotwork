@@ -1,19 +1,29 @@
 ---
-import { Image } from "astro:assets";
+// import { Image } from "astro:assets";
+import Image from "./Image.astro";
 ---
 
 <header>
   <nav>
     <a href="/">
       <!-- @ts-ignore -->
-      <Image class={"icon cabin"} src="/test.png" alt="Home" title="Home" />
+      <Image
+        class={"icon cabin"}
+        type="icon"
+        src="/test.png"
+        format="webp"
+        alt="Home"
+        title="Home"
+      />
     </a>
     <span id="bag">
       <a id="checkout-link" href="/checkout">
         <!-- @ts-ignore -->
         <Image
           class={"icon backpack"}
+          type="icon"
           src="/backpack-cropped.png"
+          format="webp"
           alt="Checkout"
           title="Checkout"
         />

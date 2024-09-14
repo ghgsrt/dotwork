@@ -125,7 +125,10 @@ const { title, description, hero_image } = Astro.props;
   //       localStorage.setItem("theme", newTheme);
   //     });
   const bag = document.getElementById("bag")!;
-  const currentBag = await (await fetch("/checkout/api/bag")).json();
+  const res = await fetch("/checkout/api/bag");
+  if (!res.ok) return;
+
+  const currentBag = await res.json();
   //   const bag = localStorage.getItem("dotwork-bag");
   //   if (!bag || bag === "undefined")
   localStorage.setItem("dotwork-bag", JSON.stringify(currentBag));
