@@ -8,7 +8,7 @@ import { Image } from "astro:assets";
 type Props = { title?: string; description?: string; hero_image?: string };
 
 const { title, description, hero_image } = Astro.props;
-console.log(hero_image)
+console.log(hero_image);
 ---
 
 <html lang="en">
@@ -33,7 +33,7 @@ console.log(hero_image)
                 <Image
                   id="HERO_IMAGE"
                   src={hero_image as any}
-				  format="webp"
+                  format="webp"
                   alt="hero image"
                 />
               )}
@@ -130,13 +130,16 @@ console.log(hero_image)
   const res = await fetch("/checkout/api/bag");
   if (res.ok) {
     const currentBag = await res.json();
+    console.log("what", currentBag);
     //   const bag = localStorage.getItem("dotwork-bag");
     //   if (!bag || bag === "undefined")
     localStorage.setItem("dotwork-bag", JSON.stringify(currentBag));
-
-    bag.dataset.quantity = JSON.parse(
-      localStorage.getItem("dotwork-bag")!,
-    ).reduce((acc: number, curr: any) => acc + curr.quantity, 0);
+    const temp = JSON.parse(localStorage.getItem("dotwork-bag")!);
+    if (Array.isArray(temp))
+      bag.dataset.quantity = temp.reduce(
+        (acc: number, curr: any) => acc + curr.quantity,
+        0,
+      );
   }
 </script>
 
