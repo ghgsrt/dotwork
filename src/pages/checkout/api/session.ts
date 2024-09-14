@@ -1,6 +1,6 @@
 import type { APIContext } from "astro";
 import Stripe from "stripe";
-import { SITE_URL } from "../../../FriendlyConsts";
+import { SITE_URL } from "../../../friendlyConsts";
 type LineItem = { price: string; quantity: number };
 
 const stripe = new Stripe(import.meta.env.STRIPE_SK!);
@@ -40,6 +40,7 @@ export const POST = async (context: APIContext): Promise<Response> => {
 
   const newLineItem = {} as LineItem;
   for (const [key, value] of formData) {
+    //@ts-ignore
     newLineItem[key] = value;
   }
 
@@ -54,6 +55,7 @@ export const POST = async (context: APIContext): Promise<Response> => {
   );
   console.log(newLineItem.quantity, typeof newLineItem.quantity);
   if (existingItem) {
+    //@ts-ignore
     existingItem.quantity! += parseInt(newLineItem.quantity);
     if (existingItem.quantity > 100) existingItem.quantity = 100;
   } else line_items.push(newLineItem);

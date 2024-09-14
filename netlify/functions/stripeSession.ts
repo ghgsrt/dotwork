@@ -1,6 +1,6 @@
 import type { Context, Config } from "@netlify/functions";
 import Stripe from "stripe";
-import { SITE_URL } from "../../src/FriendlyConsts";
+import { SITE_URL } from "../../src/friendlyConsts";
 
 const stripe = new Stripe(Netlify.env.get("STRIPE_SK")!);
 
@@ -39,8 +39,10 @@ async function postToStripeSession(
   context: Context,
 ): Promise<Response> {
   const formData = await request.formData();
+  //@ts-ignore
   const newLineItem: { price: string; quantity: number } = {};
   for (const [key, value] of formData) {
+    //@ts-ignore
     newLineItem[key] = value;
   }
 

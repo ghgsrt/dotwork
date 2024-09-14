@@ -1,6 +1,6 @@
 import type { Context, Config } from "@netlify/functions";
 import Stripe from "stripe";
-import { SITE_URL } from "../../src/FriendlyConsts";
+import { SITE_URL } from "../../src/friendlyConsts";
 
 export default async function checkout(
   request: Request,
