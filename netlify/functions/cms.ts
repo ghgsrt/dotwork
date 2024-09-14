@@ -13,13 +13,15 @@ const cms = async (request: Request, context: Context): Promise<Response> => {
   const body = await request.json();
 
   for (const key in body) {
-    if (!body[key] || !Netlify.env.get(key))
+    if (!body[key]) continue;
+    if (!Netlify.env.get(key))
       return new Response(JSON.stringify({ error: "Bad Body 😠" }), {
         status: 400,
       });
 
     const response = await fetch(
-      `https://api.netlify.com/api/v1/accounts/ghgsrt/env/${key}?site_id=${Netlify.env.get("SITE_ID")}`,
+    //   `https://api.netlify.com/api/v1/sites/${Netlify.env.get("SITE_ID")}/env/${key}`,
+        `https://api.netlify.com/api/v1/accounts/ghgsrt/env/${key}?site_id=${Netlify.env.get("SITE_ID")}`,
       {
         method: "PATCH",
         headers: {
@@ -27,12 +29,13 @@ const cms = async (request: Request, context: Context): Promise<Response> => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          context: "dev",
+          context: "production",
           context_parameter: "",
           value: body[key],
         }),
       },
     );
+
     if (!response.ok)
       throw new Error(`HTTP error! status: ${await response.text()}`);
   }

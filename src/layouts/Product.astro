@@ -45,8 +45,16 @@ console.log(productId);
         <label>
           Qty.
           <div class="cool-border">
-            <input id="quantity" name="quantity" value="1" type="number" max="100" min="1" />
+            <input
+              id="quantity"
+              name="quantity"
+              value="1"
+              type="number"
+              max="100"
+              min="1"
+            />
           </div>
+          <span id="in-cart-hint"></span>
         </label>
         <button id="add-to-bag" type="submit">Add to Bag</button>
       </form>
@@ -66,6 +74,7 @@ console.log(productId);
   const addToBag = document.getElementById("add-to-bag")!;
   const bag = document.getElementById("bag")!;
   const quantity = document.getElementById("quantity")! as HTMLInputElement;
+  const inCartHint = document.getElementById("in-cart-hint")!;
 
   addToBagForm.action = "";
 
@@ -82,7 +91,6 @@ console.log(productId);
     // else currItem.quantity += 1;
 
     // localStorage.setItem("dotwork-bag", JSON.stringify(currBag));
-
     const _res = fetch("/checkout/api/session", {
       method: "POST",
       body: new FormData(addToBagForm),
@@ -93,12 +101,24 @@ console.log(productId);
     const res = await _res;
 
     if (res.ok) {
-      const length = (await res.json()).length;
+      const _res = await res.json();
+      const length = _res.length;
       bag.dataset.quantity = length;
       addToBag.classList.remove("adding");
       addToBag.innerText = "Add to Bag";
+      console.log(_res);
+
+      inCartHint.innerText = `(${_res.item.quantity} in bag)`;
     }
   });
+
+  const res = await fetch("/checkout/api/bag");
+  if (res.ok) {
+    const item = (await res.json()).find(
+      (item: { price: string }) => item.price === priceId,
+    );
+    if (item) inCartHint.innerText = `(${item.quantity} in bag)`;
+  }
 </script>
 
 <style>
@@ -146,5 +166,9 @@ console.log(productId);
   div:has(> #quantity) {
     margin-left: 1rem;
     width: fit-content;
+  }
+
+  #in-cart-hint {
+    margin-left: 1rem;
   }
 </style>

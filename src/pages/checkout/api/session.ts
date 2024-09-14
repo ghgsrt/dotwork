@@ -45,7 +45,7 @@ export const POST = async (context: APIContext): Promise<Response> => {
   }
 
   const sessionCookie = context.cookies.get("STRIPE_SESSION")?.value;
-
+  console.log(sessionCookie);
   let line_items: { price: string; quantity: number }[];
   if (!sessionCookie) line_items = [];
   else line_items = await getAllLineItems(sessionCookie);
@@ -83,7 +83,7 @@ export const POST = async (context: APIContext): Promise<Response> => {
   const res = new Response(
     JSON.stringify({
       message: "Item added to Stripe checkout session.",
-      item: newLineItem,
+      item: existingItem ?? newLineItem,
       length,
     }),
     {

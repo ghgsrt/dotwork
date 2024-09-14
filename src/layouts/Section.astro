@@ -126,6 +126,7 @@ console.log(hero_image);
   //       document.documentElement.dataset.theme = newTheme;
   //       localStorage.setItem("theme", newTheme);
   //     });
+  console.log(document.cookie)
   const bag = document.getElementById("bag")!;
   const res = await fetch("/checkout/api/bag");
   if (res.ok) {

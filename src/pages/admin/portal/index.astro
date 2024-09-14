@@ -13,8 +13,6 @@ const {
   CONTACT_DESCRIPTION,
   EMAIL,
 } = import.meta.env;
-console.log(HERO_IMAGE);
-export const prerender = false;
 ---
 
 <div id="admin-wrapper">
@@ -135,17 +133,8 @@ export const prerender = false;
     <div id="admin-products">
       {
         products.reverse().map((product) => (
-          <div
-            class="admin-product"
-            data-admin-product-id={product.id}
-          >
-            <span
-              class="admin-product-remove"
-              onmouseenter={`document.getElementById('product-${product.id}').classList.toggle('admin-might-remove');`}
-              onmouseleave={`document.getElementById('product-${product.id}').classList.toggle('admin-might-remove');`}
-            >
-              --
-            </span>
+          <div class="admin-product" data-admin-product-id={product.id}>
+            <span class="admin-product-remove">--</span>
             <span class="admin-product-name">{product.name}</span>
             <span class="admin-product-edit">...</span>
           </div>

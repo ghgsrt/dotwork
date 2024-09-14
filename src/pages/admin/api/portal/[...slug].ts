@@ -2,8 +2,6 @@ import type { APIContext } from "astro";
 import { promises as fs } from "fs";
 import { join } from "path";
 
-export const prerender = false;
-
 const pages = ["shop"];
 const scripts = ["initAdminPortal", "themeToggle"];
 
@@ -70,3 +68,5 @@ export const GET = async (context: APIContext): Promise<Response> => {
     return new Response("File not found", { status: 404 });
   }
 };
+
+export const prerender = false;
