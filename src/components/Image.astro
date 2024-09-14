@@ -14,10 +14,9 @@ interface Props {
 const { type, src, format, alt, width, height } = Astro.props;
 
 const trueSrc = `/src/assets/${type}s/${src}`;
+const glob = `/src/assets/${type}s/*.{jpeg,jpg,png,gif}`;
 
-const images = import.meta.glob<{ default: ImageMetadata }>(
-  `/src/assets/${type}s/*.{jpeg,jpg,png,gif}`,
-);
+const images = import.meta.glob<{ default: ImageMetadata }>(glob);
 if (!images[trueSrc])
   throw new Error(
     `"${trueSrc}" does not exist in glob: "src/assets/${type}s/*.{jpeg,jpg,png,gif}"`,
