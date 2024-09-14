@@ -1,18 +1,26 @@
 ---
-import { type CollectionEntry, getCollection } from 'astro:content';
-import ArtPiece from '../../layouts/ArtPiece.astro';
+import { type CollectionEntry, getCollection } from "astro:content";
+import Product from "../../layouts/Product.astro";
+import Stripe from "stripe";
 
 export async function getStaticPaths() {
-	const artPieces = await getCollection('art');
-	return artPieces.map((art) => ({
-		params: { slug: art.slug },
-		props: art,
-	}));
-}
-type Props = CollectionEntry<'art'>;
+  const stripe = new Stripe(import.meta.env.STRIPE_SK ?? "");
+  const products = (await stripe.products.list({ active: true })).data;
+  const prices = (await stripe.prices.list({ active: true })).data;
 
-const art = Astro.props;
+  return products.map((product) => ({
+    params: { slug: product.name },
+    props: {
+      product,
+      price: prices.find((price) => price.product === product.id),
+    },
+  }));
+}
+
+const product = Astro.props;
 // const { Content } = await art.render();
+
+export const prerender = true;
 ---
 
-<ArtPiece {...art.data} />
+<Product {...product} />

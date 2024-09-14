@@ -1,116 +1,182 @@
 ---
-import { getCollection } from "astro:content"
-import Image from './Image.astro';
+import Stripe from "stripe";
+import ImageThing from "./ImageThing.astro";
 
-const artPieces = await getCollection('art')
+const stripe = new Stripe(import.meta.env.STRIPE_SK ?? "");
 
+const products = (await stripe.products.list({ active: true })).data;
+const _prices = (await stripe.prices.list()).data;
+const prices: Stripe.Price[] = products.map(
+  (product) => _prices.find((price) => price.product === product.id)!,
+);
 ---
 
 <section>
-	{
-		artPieces.map((artPiece) => (
-			<div id={`product-${artPiece.id}`} class="product">
-				<a href={artPiece.data.inStock ? `/shop/${artPiece.slug}/` : ''}>
-					<Image width={720} height={360} src={artPiece.data.image} alt={artPiece.data.description} />
-				</a>
-				<div class="info">
-					<h4 class="title">{artPiece.data.title}</h4>
-					{artPiece.data.price ? `$${artPiece.data.price}` : 'FREE'}
-				</div>
-			</div>
-		))
-	}
+  {
+    products.reverse().map((product, i) => (
+      <ImageThing
+        id={`product-${product.id}`}
+        width="720"
+        height="360"
+        className="product"
+        link={product.active ? `/shop/${product.name}/` : ""}
+        images={product.images}
+        alts={product.description}
+      >
+        <div class="info">
+          <h4 class="title floating">
+            <span>{product.name}</span>
+          </h4>
+          <span class="floating">
+            <strong>
+              {prices[i]!.unit_amount
+                ? `$${(prices[i].unit_amount / 100).toFixed(2)}`
+                : "FREE"}
+            </strong>
+          </span>
+        </div>
+      </ImageThing>
+      //   <div id={`product-${product.id}`} class="product ">
+      //     <div class="cool-border">
+      //       <a href={product.active ? `/shop/${product.name}/` : ""}>
+      //         {product.images[0] && !product.images[0].includes("stripe") ? (
+      //           <AstroImage
+      // 		  	class="selected"
+      //             width={720}
+      //             height={360}
+      //             src={`${product.images[0]}`}
+      //             alt={product.description ?? ""}
+      //           />
+      // 		  <AstroImage
+      //             width={720}
+      //             height={360}
+      //             src={`${product.images[1]}`}
+      //             alt={product.description ?? ""}
+      //           />
+      // 		  <AstroImage
+      //             width={720}
+      //             height={360}
+      //             src={`${product.images[2]}`}
+      //             alt={product.description ?? ""}
+      //           />
+      // 		  <AstroImage
+      //             width={720}
+      //             height={360}
+      //             src={`${product.images[3]}`}
+      //             alt={product.description ?? ""}
+      //           />
+      //         ) : (
+      //           <Image
+      //             width={720}
+      //             height={360}
+      //             src={`real_mount.jpeg`}
+      //             alt={product.description ?? ""}
+      //           />
+      //         )}
+      //       </a>
+      //       <div class="info ">
+      //         <h4 class="title floating">
+      //           <span>{product.name}</span>
+      //         </h4>
+      //         <span class="floating">
+      //           <strong>
+      //             {prices[i].unit_amount
+      //               ? `$${(prices[i].unit_amount / 100).toFixed(2)}`
+      //               : "FREE"}
+      //           </strong>
+      //         </span>
+      //       </div>
+      //     </div>
+      //     <div class="image-select">
+      //       {product.images.map((image, i) => (
+      //         <div
+      //           class={`lil-image cool-border ${i === 0 ? "selected" : ""}`}
+      //           onclick={`const product = document.getElementById('product-${product.id}'); product.querySelector('.lil-image.selected').classList.remove('selected'); this.classList.add('selected'); product.querySelector('.selected').classList.remove('selected'); product.querySelector('img:nth-child(${i + 1})').classList.add("selected");`}
+      //         >
+      //           <AstroImage
+      //             width={720}
+      //             height={360}
+      //             src={image}
+      //             alt={product.description ?? ""}
+      //           />
+      //         </div>
+      //       ))}
+      //     </div>
+      //   </div>
+    ))
+  }
 </section>
 
 <style>
-	section {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: space-between;
-		width: 100%;
-		height: 100%;
-	}
-	.product {
-		--border-width: 2px;
-		display: flex;
-		align-items: flex-end;
-		width: calc(33% - 0.5rem);
-		height: 13rem;
-		position: relative;
-		margin-bottom: 0.5rem;
-		border: var(--border-width) solid rgba(0, 0, 0, 0.33);
-		transition: border 200ms ease-in-out;
-		/* border-radius: 0.5rem; */
-	}
-	.product:hover {
-		border: 2px solid rgba(0, 0, 0, 0.75);
-	}
-	.product::before {
-		content: "";
-		position: absolute;
-		/* max-width: 100%; */
-		width: calc(100% + 2 * var(--border-width));
-		top: 1rem;
-		bottom: 1rem;
-		left: calc(-1 * var(--border-width));
-		/* background-color: red; */
-		background-color: var(--off-white);
-		/* border: 2px solid var(--off-white); */
-		z-index: 1;
-		transition: top 200ms ease-in-out, bottom 200ms ease-in-out;
-	}
-	.product::after {
-		content: "";
-		position: absolute;
-		/* max-height: 100%; */
-		height: calc(100% + 2 * var(--border-width));
-		left: 1rem;
-		right: 1rem;
-		top: calc(-1 * var(--border-width));
-		background: var(--off-white);
-		/* background: red; */
-		/* border: 2px solid var(--off-white); */
-		z-index: 1;
-		transition: left 200ms ease-in-out, right 200ms ease-in-out;
-	}
-	.product:hover::before {
-		top: 50%;
-		bottom: 50%;
-	}
-	.product:hover::after {
-		left: 50%;
-		right: 50%;
-	}
+  section {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 0.5rem;
+    width: 100%;
+    height: 100%;
+  }
 
-	.product a {
-		display: flex;
-		align-self: flex-end;
-	}
-	.product :is(a, img) {
-		z-index: 2;
-		max-width: 100%;
-		max-height: 100%;
-		object-fit: contain;
-	}
-	.product .info {
-		display: flex;
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		opacity: 0;
-		transition: opacity 150ms ease-in-out;
-		z-index: 3;
-	}
-	.product:hover .info {
-		opacity: 1;
-		pointer-events: none;
-	}
-	.product .info:is(*, * *) {
-		color: black;
-	}
+  @media (max-width: 1280px) {
+    section {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 800px) {
+    section {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* .product > div:first-child {
+    --border-width: 2px;
+    display: flex;
+    align-items: flex-end;
+    position: relative;
+    margin-bottom: 0.5rem;
+    transition: border 200ms ease-in-out;
+  } */
+
+  .product a {
+    display: flex;
+    align-self: flex-end;
+  }
+  .product :is(a, img) {
+    z-index: 2;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+  .product .info {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 150ms ease-in-out;
+    z-index: 3;
+  }
+  .product > div:first-child:hover .info {
+    opacity: 1;
+    pointer-events: none;
+  }
+
+  .product .image-select {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    padding: 0 5rem;
+  }
+
+  .product > div:first-child img:not(.selected) {
+    display: none;
+  }
+
+  .product .lil-image {
+    /* width: 50%; */
+  }
 </style>

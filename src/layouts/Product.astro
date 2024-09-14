@@ -1,0 +1,150 @@
+---
+import type { CollectionEntry } from "astro:content";
+import FormattedDate from "../components/FormattedDate.astro";
+import Section from "./Section.astro";
+import { Image } from "astro:assets";
+import ImageThing from "../components/ImageThing.astro";
+// import Image from "../components/Image.astro";
+// type Props = CollectionEntry<"art">["data"];
+
+const {
+  product: { id: productId, name, description, active, metadata, images },
+  price: { id: priceId, unit_amount },
+} = Astro.props;
+console.log(productId);
+---
+
+<Section title={name}>
+  <article id="product" data-price-id={priceId}>
+    <div class="hero-image">
+      {
+        (
+          <ImageThing
+            id={productId}
+            images={images ?? []}
+            alts={description}
+            allowResize
+            allowZoom
+          />
+        )
+      }
+    </div>
+    <div class="product-info">
+      <h3>{name}</h3>
+      <h4 class={active ? "" : "disabled"}>
+        <strong>${(unit_amount / 100).toFixed(2)}</strong>
+      </h4>
+
+      <form
+        id="add-to-bag-form"
+        method="POST"
+        action="/checkout/api/session"
+        target="hidden-iframe"
+      >
+        <input class="hide" name="price" value={priceId} readonly />
+        <label>
+          Qty.
+          <div class="cool-border">
+            <input id="quantity" name="quantity" value="1" type="number" max="100" min="1" />
+          </div>
+        </label>
+        <button id="add-to-bag" type="submit">Add to Bag</button>
+      </form>
+      <iframe name="hidden-iframe" style="display:none;"></iframe>
+      <p>{description}</p>
+    </div>
+  </article>
+</Section>
+
+<script>
+  const wrapper = document.getElementById("product")!;
+  const priceId = wrapper.dataset.priceId;
+
+  const addToBagForm = document.getElementById(
+    "add-to-bag-form",
+  )! as HTMLFormElement;
+  const addToBag = document.getElementById("add-to-bag")!;
+  const bag = document.getElementById("bag")!;
+  const quantity = document.getElementById("quantity")! as HTMLInputElement;
+
+  addToBagForm.action = "";
+
+  addToBag.addEventListener("click", async () => {
+    // console.log(
+    //   localStorage.getItem("dotwork-bag"),
+    //   typeof localStorage.getItem("dotwork-bag"),
+    // );
+    // const currBag = JSON.parse(localStorage.getItem("dotwork-bag")!);
+    // const currItem = currBag.find(
+    //   (item: { price: string }) => item.price === priceId,
+    // );
+    // if (!currItem) currBag.push({ price: priceId, quantity: 1 });
+    // else currItem.quantity += 1;
+
+    // localStorage.setItem("dotwork-bag", JSON.stringify(currBag));
+
+    const _res = fetch("/checkout/api/session", {
+      method: "POST",
+      body: new FormData(addToBagForm),
+    });
+    addToBag.classList.add("adding");
+    addToBag.innerText = "Adding...";
+
+    const res = await _res;
+
+    if (res.ok) {
+      const length = (await res.json()).length;
+      bag.dataset.quantity = length;
+      addToBag.classList.remove("adding");
+      addToBag.innerText = "Add to Bag";
+    }
+  });
+</script>
+
+<style>
+  article {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  h3 {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 970px) {
+    article {
+      grid-template-columns: 1fr;
+    }
+    h3 {
+      margin-top: 1rem;
+    }
+  }
+  h3,
+  h4 {
+    text-align: left;
+  }
+  .hero-image {
+    width: 100%;
+    height: 100%;
+  }
+
+  #add-to-bag {
+    width: 100% !important;
+    margin-bottom: 2rem;
+  }
+  #add-to-bag.adding {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  label:has(#quantity) {
+    display: flex;
+    width: fit-content;
+    text-align: center;
+    align-items: center;
+  }
+  div:has(> #quantity) {
+    margin-left: 1rem;
+    width: fit-content;
+  }
+</style>

@@ -1,0 +1,156 @@
+---
+import Stripe from "stripe";
+
+const stripe = new Stripe(import.meta.env.STRIPE_SK ?? "");
+
+const products = (await stripe.products.list({ active: true })).data;
+
+const {
+  HERO_IMAGE,
+  HEADER,
+  DESCRIPTION,
+  CONTACT_HEADER,
+  CONTACT_DESCRIPTION,
+  EMAIL,
+} = import.meta.env;
+console.log(HERO_IMAGE);
+export const prerender = false;
+---
+
+<div id="admin-wrapper">
+  <div class="theme-toggle" data-theme-toggle></div>
+
+  <hr />
+
+  <details open>
+    <summary>CMS</summary>
+    <form id="admin-form-cms">
+      <label for="admin-hero-image">Hero Image</label>
+      <div class="cool-border">
+        <select
+          id="admin-hero-image"
+          name="HERO_IMAGE"
+          data-hero-image={HERO_IMAGE}
+          data-url={"https://pub-ed97f6dc1a834c2cbb3651b576615bdd.r2.dev/"}
+        >
+        </select>
+      </div>
+      <label for="admin-header">Header Text</label>
+      <div class="cool-border">
+        <input id="admin-header" name="HEADER" placeholder={HEADER} />
+      </div>
+      <label for="admin-description">Sub Header Text</label>
+      <div class="cool-border">
+        <input
+          id="admin-description"
+          name="DESCRIPTION"
+          placeholder={DESCRIPTION}
+        />
+      </div>
+      <label for="admin-contact-header">Contact Header Text</label>
+      <div class="cool-border">
+        <input
+          id="admin-contact-header"
+          name="CONTACT_HEADER"
+          placeholder={CONTACT_HEADER}
+        />
+      </div>
+      <label for="admin-contact-description">Contact Description Text</label>
+      <div class="cool-border">
+        <input
+          id="admin-contact-description"
+          name="CONTACT_DESCRIPTION"
+          placeholder={CONTACT_DESCRIPTION}
+        />
+      </div>
+      <label for="admin-contact-email">Your Contact Email</label>
+      <div class="cool-border">
+        <input id="admin-contact-email" name="EMAIL" placeholder={EMAIL} />
+      </div>
+    </form>
+    <button id="admin-form-cms-submit">Save</button>
+    <br />
+    <br />
+  </details>
+
+  <hr />
+
+  <details open>
+    <summary>Products</summary>
+    <button
+      onclick="document.getElementById('admin-add-product').classList.remove('hide')"
+      >New Product</button
+    >
+    <div class="hide" id="admin-add-product">
+      <form id="admin-form-add-product">
+        <label for="admin-add-product-name">Name</label>
+        <div class="cool-border">
+          <input id="admin-add-product-name" name="name" required />
+        </div>
+        <label for="admin-add-product-description">Description</label>
+        <div class="cool-border">
+          <input
+            id="admin-add-product-description"
+            name="description"
+            required
+          />
+        </div>
+        <label for="admin-add-product-price">Price ($)</label>
+        <div class="cool-border">
+          <input id="admin-add-product-price" name="price" required />
+        </div>
+      </form>
+      <form id="admin-form-add-product-image-1">
+        <label for="admin-add-product-image-1">Image 1</label>
+        <div class="cool-border">
+          <input
+            id="admin-add-product-image-1"
+            type="file"
+            name="image-1"
+            required
+          />
+        </div>
+      </form>
+      <form id="admin-form-add-product-image-2">
+        <label for="admin-add-product-image-2">Image 2</label>
+        <div class="cool-border">
+          <input id="admin-add-product-image-2" type="file" name="image-2" />
+        </div>
+      </form>
+      <form id="admin-form-add-product-image-3">
+        <label for="admin-add-product-image-3">Image 3</label>
+        <div class="cool-border">
+          <input id="admin-add-product-image-3" type="file" name="image-3" />
+        </div>
+      </form>
+      <div style={{ display: "flex" }}>
+        <button id="admin-form-add-product-submit" type="submit">Add</button>
+        <button
+          onclick="document.getElementById('admin-add-product').classList.add('hide')"
+          >Close</button
+        >
+      </div>
+    </div>
+
+    <div id="admin-products">
+      {
+        products.reverse().map((product) => (
+          <div
+            class="admin-product"
+            data-admin-product-id={product.id}
+          >
+            <span
+              class="admin-product-remove"
+              onmouseenter={`document.getElementById('product-${product.id}').classList.toggle('admin-might-remove');`}
+              onmouseleave={`document.getElementById('product-${product.id}').classList.toggle('admin-might-remove');`}
+            >
+              --
+            </span>
+            <span class="admin-product-name">{product.name}</span>
+            <span class="admin-product-edit">...</span>
+          </div>
+        ))
+      }
+    </div>
+  </details>
+</div>

@@ -1,65 +1,170 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
+import { Image } from "astro:assets";
 
-type Props = { title?: string, description?: string };
+type Props = { title?: string; description?: string; hero_image?: string };
 
-const {title, description} = Astro.props;
-
+const { title, description, hero_image } = Astro.props;
 ---
 
 <html lang="en">
-	<head>
-		<BaseHead title={title ?? SITE_TITLE} description={description ?? SITE_DESCRIPTION} />
-		<style>
-			.heading {
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-			}
-		</style>
-		<script>
-			let portalHasBeenFetched = false;
-			window.addEventListener('keydown', (event) => {
-				if (event.key === 'Escape') {
-					if (!portalHasBeenFetched)
-						fetch(`/admin/api/portal${window.location.pathname}`).then(async (response) => {
-							if (!response.ok) return false;
+  <head>
+    <BaseHead
+      title={title ?? SITE_TITLE}
+      description={description ?? SITE_DESCRIPTION}
+    />
+  </head>
 
-							return await response.blob();
-						}).then((myBlob) => {
-							if (myBlob === false) return;
-
-							const objectURL = URL.createObjectURL(myBlob);
-							const sc = document.createElement("script");
-
-							sc.setAttribute("src", objectURL);
-							sc.setAttribute("type", "text/javascript");
-
-							document.head.appendChild(sc);
-
-							portalHasBeenFetched = true;
-						});
-
-					document.getElementById('admin-portal')?.classList.toggle('hide');
-				}
-			})
-		</script>
-	</head>
-
-	<body>
-		<div>
-			<Header />
-			<main>
-				{title && <div class='heading'>
-					<h1>{title}</h1>
-					{description && <p>{description}</p>}
-					<slot />
-				</div>}
-			</main>
-			<Footer />
-		</div>
-	</body>
+  <body>
+    <div style={{ position: "relative" }}>
+      <Header />
+      <main>
+        {
+          title && (
+            <div
+              class="heading"
+              style={{ marginTop: !hero_image ? "1.1rem" : "" }}
+            >
+              {hero_image && (
+                <Image
+                  id="HERO_IMAGE"
+                  src={hero_image as any}
+                  alt="hero image"
+                />
+              )}
+              <div>
+                <h1
+                  id="HEADER"
+                  class={`floating ${!hero_image ? "very-solid" : ""}`}
+                >
+                  <span>Dotwork Pete</span>
+                </h1>
+                {hero_image && description && (
+                  <span class="floating ">
+                    <p id="DESCRIPTION">{description}</p>
+                  </span>
+                )}
+              </div>
+            </div>
+          )
+        }
+        <br />
+        <hr />
+        <br />
+        {!hero_image && description && <p id="DESCRIPTION">{description}</p>}
+        <div class={`spacer ${hero_image ? "hide" : ""}`}>
+          <br />
+          <br />
+          {
+            description && (
+              <>
+                <hr />
+                <br />
+              </>
+            )
+          }
+        </div>
+        <slot />
+      </main>
+      <Footer />
+    </div>
+    <div id="admin-portal" class="hide"></div>
+    <div id="cursor"></div>
+  </body>
 </html>
+
+<script>
+  const cursor = document.getElementById("cursor")!;
+
+  window.addEventListener("mousemove", () => (cursor.style.display = "block"), {
+    once: true,
+  });
+
+  let last: string;
+  window.addEventListener("dragend", (event) => {
+    if (event.button !== 0) return;
+
+    cursor.style.transform = last;
+  });
+  window.addEventListener("mouseup", (event) => {
+    if (event.button !== 0) return;
+
+    cursor.style.transform = last;
+  });
+  window.addEventListener("mousedown", (event) => {
+    if (event.button !== 0) return;
+
+    last = cursor.style.transform;
+    cursor.style.transform = "rotate(-30deg)";
+  });
+  window.addEventListener("contextmenu", () => (cursor.style.transform = last));
+
+  const move = (event: MouseEvent) => {
+    cursor.style.top = event.clientY + window.scrollY - 15 + "px";
+    cursor.style.left = event.clientX + window.scrollX - 2 + "px";
+  };
+  document.documentElement.addEventListener("mousemove", move);
+  document.documentElement.addEventListener("drag", move);
+  document.documentElement.addEventListener(
+    "mouseleave",
+    () => (cursor.style.display = "none"),
+  );
+  document.documentElement.addEventListener(
+    "mouseenter",
+    () => (cursor.style.display = "block"),
+  );
+
+  //   window
+  //     .matchMedia("(prefers-color-scheme: dark)")
+  //     .addEventListener("change", ({ matches: isDark }) => {
+  //       const newTheme = isDark ? "dark" : "light";
+  //       document.documentElement.dataset.theme = newTheme;
+  //       localStorage.setItem("theme", newTheme);
+  //     });
+  const bag = document.getElementById("bag")!;
+  const currentBag = await (await fetch("/checkout/api/bag")).json();
+  //   const bag = localStorage.getItem("dotwork-bag");
+  //   if (!bag || bag === "undefined")
+  localStorage.setItem("dotwork-bag", JSON.stringify(currentBag));
+
+  bag.dataset.quantity = JSON.parse(
+    localStorage.getItem("dotwork-bag")!,
+  ).reduce((acc: number, curr: any) => acc + curr.quantity, 0);
+</script>
+
+<style>
+  .heading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+  .heading > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: 45%;
+  }
+  .heading > img {
+    width: 100%;
+  }
+  .heading canvas {
+    /* content: ""; */
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* right: 0;
+    bottom: 0; */
+    /* background-color: red !important; */
+  }
+
+  #DESCRIPTION {
+    text-align: center;
+    position: relative;
+    z-index: 3;
+  }
+</style>

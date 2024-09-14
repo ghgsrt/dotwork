@@ -1,33 +1,67 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
-import Section from '../layouts/Section.astro';
-import Shop from '../components/Shop.astro';
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+import Section from "../layouts/Section.astro";
+import Shop from "../components/Shop.astro";
+import Contact from "../components/Contact.astro";
+
+export const prerender = true;
 ---
 
-<!-- <!doctype html> -->
-<Section title={SITE_TITLE} description={SITE_DESCRIPTION}>
-	<Shop />
-	<div>
-		<form class="hide" data-netlify="true">
-			<input name="header" />
-			<input type="hidden" name="form-name" value="cms-header" />
-		</form>
-		<form class="hide" data-netlify="true">
-			<input name="description" />
-			<input type="hidden" name="form-name" value="cms-description" />
-		</form>
-		<form class="hide" data-netlify="true">
-			<input name="name" />
-			<input name="description" />
-			<input name="price" />
-			<input name="quantity" />
-			<input type="file" name="image-1" />
-			<input type="file" name="image-2" />
-			<input type="file" name="image-3" />
-			<input type="hidden" name="form-name" value="cms-createProduct" />
-		</form>
-	</div>
+<Section
+  title={SITE_TITLE}
+  description={SITE_DESCRIPTION}
+  hero_image={import.meta.env.HERO_IMAGE}
+>
+  <div>
+    <Shop />
+    <br />
+    <hr />
+    <br />
+    <Contact />
+  </div>
 </Section>
+
+<script>
+  import { getCookie } from "../scripts/cookies";
+
+  const adminPortal = document.getElementById("admin-portal")!;
+
+  let portalHasBeenFetched = false;
+  window.addEventListener("keydown", (event) => {
+    if (getCookie("admin") && event.key === "Escape") {
+      if (!portalHasBeenFetched) {
+        document.cookie = "admin";
+
+        fetch(`/admin/api/portal${window.location.pathname}`)
+          .then(async (response) => {
+            if (!response.ok) return false;
+
+            return await response.json();
+          })
+          .then(({ js, html }) => {
+            if (!js || !html) return;
+
+            const objectURL = URL.createObjectURL(
+              new Blob([js], { type: "text/plain" }),
+            );
+            const sc = document.createElement("script");
+
+            sc.setAttribute("src", objectURL);
+            sc.setAttribute("type", "text/javascript");
+
+            const portal = document.getElementById("admin-portal")!;
+
+            document.head.appendChild(sc);
+            portal.innerHTML = html;
+
+            portalHasBeenFetched = true;
+            adminPortal.classList.remove("hide");
+          });
+      } else if (adminPortal.children.length > 0)
+        adminPortal.classList.toggle("hide");
+    }
+  });
+</script>

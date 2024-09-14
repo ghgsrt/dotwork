@@ -1,32 +1,63 @@
 ---
 import Section from "../../layouts/Section.astro";
-
-
 ---
 
-<Section>
-	<p id="form-error"></p>
-	<form id="admin-login" method="POST" action="adminLogin">
+<Section title="Admin Login">
+  <form id="admin-login">
+    <p class="form-error"></p>
+    <label for="username">Username</label>
+    <div class="cool-border">
+      <input name="username" />
+    </div>
+    <label for="password">Password</label>
+    <div class="cool-border">
+      <input name="password" />
+    </div>
+    <br />
+    <button type="submit">Submit</button>
+  </form>
 </Section>
 
-</form>
+<style>
+  #admin-login {
+    display: flex;
+    flex-direction: column;
+    max-width: 30rem;
+    margin: 0 auto;
+  }
+
+  button {
+    width: 100% !important;
+  }
+</style>
 
 <script>
-	const form = document.getElementById('admin-login')! as HTMLFormElement;
-	const error = document.getElementById('form-error')!;
+  import { setCookie } from "../../scripts/cookies";
 
-	form.addEventListener('submit', async (event) => {
-		event.preventDefault();
+  const form = document.getElementById("admin-login")! as HTMLFormElement;
+  const error = form.querySelector(".form-error")! as HTMLParagraphElement;
+  console.log("boobies", form);
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-		const response = await fetch(`/admin/api/${form.action}`, {
-			method: form.method,
-			body: new FormData(form)
-		});
+    const formData = new FormData(form);
+    for (const [name, value] of formData.entries()) {
+      if (!value) {
+        error.innerText = `${name} cannot be empty 😠`;
+        return;
+      }
+    }
 
-		if (response.ok) {
-			window.location.href = "/";
-		} else {
-			error.innerText = (await response.json()).error;
-		}
-	});
+    const response = await fetch(`/admin/api/login`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (response.ok) {
+      setCookie("admin", "nice", 1);
+      window.location.href = "/";
+    } else {
+      error.innerText = (await response.json()).error;
+    }
+  });
 </script>

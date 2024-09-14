@@ -1,0 +1,132 @@
+---
+import { Image as AstroImage } from "astro:assets";
+import Image from "./Image.astro";
+
+const {
+  id,
+  className,
+  images,
+  alts,
+  link,
+  width,
+  height,
+  allowResize,
+  allowZoom,
+} = Astro.props;
+const Tag = link ? "a" : "div";
+console.log(allowZoom);
+---
+
+<div
+  id={id}
+  class={`${className ?? ""} image-thing`}
+  data-allow-zoom={allowZoom}
+>
+  <div class="cool-border">
+    <Tag class={`main-image-container`} href={link ? link : ""}>
+      {
+        images.map((image: string, i: number) => (
+          <div class={`image-container ${i === 0 ? "selected" : ""}`}>
+            <AstroImage
+              width={allowResize ? "0" : width}
+              height={allowResize ? "0" : height}
+              src={`${image}`}
+              alt={alts?.[i] ?? alts ?? ""}
+            />
+            {allowResize && (
+              <AstroImage
+                class={`preview`}
+                width={allowResize ? "0" : width}
+                height={allowResize ? "0" : height}
+                src={`${image}`}
+                alt={alts?.[i] ?? alts ?? ""}
+              />
+            )}
+          </div>
+        ))
+      }
+    </Tag>
+    <slot />
+  </div>
+  <div class="image-select">
+    {
+      images.map((image: string, i: number) => (
+        <div
+          class={`lil-image cool-border ${i === 0 ? "selected" : ""}`}
+          onclick={`const product = document.getElementById('${id}'); product.querySelector('.lil-image.selected').classList.remove('selected'); this.classList.add('selected'); product.querySelector('.image-container.selected').classList.remove('selected'); product.querySelector('.image-container:nth-child(${i + 1})').classList.add("selected");`}
+        >
+          <AstroImage
+            width={allowResize ? "0" : width}
+            height={allowResize ? "0" : height}
+            src={image}
+            alt={alts?.[i] ?? alts ?? ""}
+          />
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .image-select {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    padding: 0 5rem;
+    margin-top: 0.5rem;
+  }
+
+  .image-thing > :not(.image-select) .image-container:not(.selected) {
+    display: none;
+  }
+
+  .preview {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    transform: scale(300%);
+    transform-origin: 0 0;
+    background-color: var(--primary);
+    transition: opacity 200ms ease-in-out;
+  }
+
+  .image-container {
+    position: relative;
+    overflow: hidden;
+  }
+  .image-container:hover .preview {
+    opacity: 1;
+    transition: opacity 50ms ease-in-out;
+  }
+</style>
+
+<script>
+  const imageContainers = document.querySelectorAll(
+    "[data-allow-zoom] .image-container",
+  ) as NodeListOf<HTMLElement>;
+
+  for (const container of imageContainers) {
+    let rect: DOMRect;
+    const preview = container.children[1] as HTMLImageElement;
+
+    const move = (e: MouseEvent) => {
+      preview.style.left = (-e.clientX + rect.left) * 2 + "px";
+      preview.style.top = (-e.clientY + rect.top) * 2 + "px";
+    };
+
+    container.addEventListener("mouseenter", () => {
+      if (!container.classList.contains("selected")) return;
+
+      rect = container.getBoundingClientRect();
+
+      container.addEventListener(
+        "mouseleave",
+        () => container.removeEventListener("mousemove", move),
+        { once: true },
+      );
+      container.addEventListener("mousemove", move);
+    });
+  }
+</script>

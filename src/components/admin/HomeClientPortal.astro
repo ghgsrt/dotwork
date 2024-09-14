@@ -1,0 +1,80 @@
+---
+import Stripe from "stripe";
+
+const stripe = new Stripe(Netlify.env.get("STRIPE_SK") ?? "");
+
+const products = (await stripe.products.list()).data;
+
+export const prerender = false;
+---
+
+<div id="admin-portal">
+  <form id="admin-form-header">
+    <label for="header">Header Text</label>
+    <input name="header" />
+    <label for="description">Sub Header Text</label>
+    <input name="description" />
+  </form>
+
+  <button id="admin-new-product">New Product</button>
+  <div id="admin-products">
+    {
+      products.map((product) => (
+        <div
+          onmouseenter={`document.getElementById('product-${product.id}').classList.toggle('admin-hover');`}
+          onmouseleave={`document.getElementById('product-${product.id}').classList.toggle('admin-hover');`}
+        >
+          <span class="admin-product-remove">-</span>
+          <span class="admin-product-name">{product.name}</span>
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="hide" id="admin-add-product">
+    <form id="admin-form-add-product-info">
+      <label>
+        Name
+        <input id="admin-name" name="name" required />
+      </label>
+      <label for="description">Description</label>
+      <input name="description" required />
+      <label for="price">Price</label>
+      <input name="price" required />
+      <label for="quantity">Quantity</label>
+      <input name="quantity" />
+    </form>
+    <form id="admin-form-add-product-image-1">
+      <label for="image-1">Image 1</label>
+      <input type="file" name="image-1" required />
+    </form>
+    <form id="admin-form-add-product-image-2">
+      <label for="image-2">Image 2</label>
+      <input type="file" name="image-2" />
+    </form>
+    <form id="admin-form-add-product-image-3">
+      <label for="image-3">Image 3</label>
+      <input type="file" name="image-3" />
+    </form>
+    <div>
+      <button>Add</button>
+      <button>Cancel</button>
+    </div>
+  </div>
+  <script>
+    console.log("bro");
+    
+  </script>
+</div>
+
+<style>
+  div,
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  #admin-add-product > div:last-child {
+    flex-direction: row;
+  }
+</style>

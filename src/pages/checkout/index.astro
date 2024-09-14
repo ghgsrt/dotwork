@@ -1,0 +1,193 @@
+---
+import Stripe from "stripe";
+import { getAllLineItems } from "./api/session";
+import Section from "../../layouts/Section.astro";
+import Image from "astro/components/Image.astro";
+
+const sessionCookie = Astro.cookies.get("STRIPE_SESSION")?.value;
+console.log(Astro.cookies);
+console.log(sessionCookie);
+let items: [Stripe.Product, Stripe.Price, number][];
+if (sessionCookie) {
+  const stripe = new Stripe(import.meta.env.STRIPE_SK ?? "");
+
+  const products = (await stripe.products.list({ active: true })).data;
+  const prices = (await stripe.prices.list()).data;
+
+  let lineItems = await getAllLineItems(sessionCookie);
+
+  items = lineItems.map((item) => {
+    const price = prices.find((price) => price.id === item.price)!;
+    const product = products.find((product) => product.id === price.product)!;
+
+    return [product, price, item.quantity];
+  });
+} else items = [];
+
+export const prerender = false;
+---
+
+<Section title="Checkout">
+  <div id="checkout-container">
+    {
+      items.map(([product, price, quantity]) => (
+        <div class="checkout-item">
+          <Image
+            class="product-image"
+            src={product.images[0]!}
+            alt={product.description!}
+            width="720"
+            height="360"
+          />
+          <span class="product-name" title={product.name}>
+            {product.name}
+          </span>
+
+          <span class="product-quantity">
+            {/* <span>-</span> */}
+            <label>
+              <span>Qty</span>
+              <div class="cool-border">
+                <input
+                  name="quantity"
+                  value={quantity}
+                  type="number"
+                  max="100"
+                  min="0"
+                  data-price-id={price.id}
+                />
+                <input name="price" value={price.id} class="hide" />
+              </div>
+            </label>
+            {/* <span>+</span> */}
+          </span>
+          <span class="product-price">
+            {price.unit_amount
+              ? `$${((price.unit_amount * quantity) / 100).toFixed(2)} ($${(price.unit_amount / 100).toFixed(2)} each)`
+              : "FREE"}
+          </span>
+        </div>
+      ))
+    }
+    <br />
+    <p>
+      <strong> Total: </strong>
+      ${
+        (
+          items.reduce(
+            (acc, curr) => acc + (curr[1].unit_amount ?? 0) * curr[2],
+            0,
+          ) / 100
+        ).toFixed(2)
+      }
+    </p>
+    <a href="/api/checkout">
+      <button id="checkout">Checkout</button>
+    </a>
+  </div>
+</Section>
+
+<script>
+  const container = document.getElementById("checkout-container")!;
+  const quantityInputs = document.querySelectorAll(
+    '#checkout-container input[name="quantity"]',
+  ) as NodeListOf<HTMLInputElement>;
+
+  let last: string;
+  const updateItem = async (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    const priceId = target.dataset.priceId;
+    const quantity = target.value;
+
+    if (last === quantity) return;
+
+    container.classList.add("loading");
+
+    const res = await fetch("/checkout/api/session", {
+      method: "PATCH",
+      body: JSON.stringify({
+        price: priceId,
+        quantity,
+      }),
+    });
+
+    container.classList.remove("loading");
+
+    if (!res.ok) alert("damn");
+    else window.location.reload();
+  };
+
+  for (const input of quantityInputs) {
+    input.addEventListener("focus", () => (last = input.value));
+    input.addEventListener("blur", updateItem);
+    input.addEventListener("keypress", (e: KeyboardEvent) => {
+      if (e.key === "Enter") updateItem(e);
+    });
+  }
+</script>
+
+<style>
+  #checkout-container {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+  }
+
+  .checkout-item {
+    height: 3rem;
+    width: min(100%, 720px);
+    display: flex;
+    align-items: center;
+    border: 0.125rem solid var(--secondary);
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .product-image {
+    height: 100%;
+    width: auto;
+  }
+  .product-name {
+    flex: 1;
+    margin: 0 1rem;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block;
+    width: 0;
+    white-space: nowrap;
+  }
+  .product-price {
+  }
+  .product-quantity {
+    display: flex;
+    align-items: center;
+    margin-right: 0.5rem;
+  }
+  .product-quantity label {
+    display: flex;
+    align-items: center;
+  }
+  .product-quantity input {
+    /* width: 2rem; */
+    padding: 0.25rem;
+  }
+
+  #checkout-container.loading :is(:has(> input), button) {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .product-quantity span {
+    /* padding: 1rem; */
+	margin-right: 0.25rem;
+	width: fit-content;
+	white-space: nowrap;
+  }
+  #checkout {
+    /* width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column; */
+    align-self: end;
+    color: var(--secondary) !important;
+  }
+</style>

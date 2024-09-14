@@ -1,70 +1,125 @@
 ---
-import HeaderLink from './HeaderLink.astro';
-import { SITE_TITLE } from '../consts';
+import { Image } from "astro:assets";
 ---
 
 <header>
-	<nav>
-		<div class="internal-links">
-			<HeaderLink href="/shop">Shop</HeaderLink>
-		</div>
-		<h2><a href="/">{SITE_TITLE}</a></h2>
-		<div class="internal-links">
-			<HeaderLink href="/contact">Contact</HeaderLink>
-		</div>
-		<div class="social-links">
-			
-		</div>
-	</nav>
-</header>
-<style>
-	header {
-		margin: 0;
-		padding: 0 1em;
-		background: white;
-		box-shadow: 0 2px 8px rgba(var(--black), 5%);
-	}
-	h2 {
-		margin: 0;
-		font-size: 1em;
-	}
+  <nav>
+    <a href="/">
+      <Image class={"icon cabin"} src="/test.png" alt="Home" title="Home" />
+    </a>
+    <span id="bag">
+      <a id="checkout-link" href="/checkout">
+        <Image
+          class={"icon backpack"}
+          src="/backpack-cropped.png"
+          alt="Checkout"
+          title="Checkout"
+        />
+      </a>
+    </span>
+  </nav>
 
-	h2 a,
-	h2 a.active {
-		text-decoration: none;
-	}
-	nav {
-		margin: 0 auto;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		max-width: 60rem;
-	}
-	nav a {
-		padding: 1em 0.5em;
-		color: var(--black);
-		border-bottom: 4px solid transparent;
-		text-decoration: none;
-	}
-	nav a.active {
-		text-decoration: none;
-		border-bottom-color: var(--accent);
-	}
-	.internal-links:first-of-type {
-		width: 6ch;
-	}
-	.internal-links:last-of-type {
-	}
-	.social-links,
-	.social-links a {
-		display: flex;
-	}
-	.social-links:empty{ 
-		display: none;
-	}
-	@media (max-width: 720px) {
-		.social-links {
-			display: none;
-		}
-	}
-</style>
+  <script>
+    // const bag = document.getElementById("bag")!;
+    // const checkoutLink = document.getElementById(
+    //   "checkout-link",
+    // )! as HTMLFormElement;
+
+    // bag.dataset.quantity = JSON.parse(
+    //   localStorage.getItem("dotwork-bag")!,
+    // ).reduce((acc: number, curr: any) => acc + curr.quantity, 0);
+    // bag.addEventListener("click", () => checkoutLink.submit());
+    // bag.addEventListener("click", async () => {
+    //   const bag = localStorage.getItem("dotwork-bag");
+    //   const res = await fetch("/api/checkout", {
+    //     method: "POST",
+    //     body: bag,
+    //   });
+    //   if (res.ok) window.location.href = await res.json();
+    // });
+  </script>
+
+  <style>
+    header {
+      --edge: calc((100% - var(--max-width)) / 2 + 1rem);
+      margin: 0;
+      padding: 0.15rem 0;
+      position: absolute;
+      left: var(--edge);
+      right: var(--edge);
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      z-index: 3;
+      pointer-events: none;
+      /* background: white;
+    box-shadow: 0 2px 8px rgba(var(--black), 5%); */
+    }
+
+    .theme-toggle {
+      pointer-events: initial;
+    }
+    a {
+      display: contents;
+    }
+    .icon {
+      pointer-events: initial;
+    }
+    .icon.cabin {
+      --dims: 3rem;
+      width: var(--dims);
+      height: var(--dims);
+    }
+    .icon.backpack {
+      margin-top: 0.38rem;
+      margin-right: 0.6rem;
+      --dims: 2rem;
+      width: var(--dims);
+      height: var(--dims);
+    }
+    h2 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    h2 a,
+    h2 a.active {
+      text-decoration: none;
+    }
+    nav {
+      /* margin: 0 auto; */
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      /* max-width: 60rem; */
+      width: 100%;
+    }
+    nav a {
+      padding: 1em 0.5em;
+      color: var(--black);
+      border-bottom: 4px solid transparent;
+      text-decoration: none;
+    }
+    nav a.active {
+      text-decoration: none;
+      border-bottom-color: var(--accent);
+    }
+    .internal-links:first-of-type {
+      width: 6ch;
+    }
+    .internal-links:last-of-type {
+    }
+    .social-links,
+    .social-links a {
+      display: flex;
+    }
+    .social-links:empty {
+      display: none;
+    }
+    @media (max-width: 720px) {
+      .social-links {
+        display: none;
+      }
+    }
+  </style>
+</header>
