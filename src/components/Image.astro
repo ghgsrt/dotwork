@@ -13,7 +13,7 @@ interface Props {
 
 const { type, src, format, alt, width, height } = Astro.props;
 
-const trueSrc = `/src/assets/${type}s/${src}`;
+const trueSrc = `/src/assets/${type}s${src}`;
 
 const images =
   type === "icon"
