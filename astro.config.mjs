@@ -3,13 +3,12 @@ import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 
 import netlify from "@astrojs/netlify";
-import { SITE_URL } from "./src/FriendlyConsts";
- 
+
 // https://astro.build/config
 export default defineConfig({
-  site: SITE_URL,
+  site: "https://dotwork.netlify.app",
   integrations: [mdx(), sitemap()],
-  output: "server",
+  output: "hybrid",
   adapter: netlify(),
   image: {
     remotePatterns: [{ protocol: "https" }],
