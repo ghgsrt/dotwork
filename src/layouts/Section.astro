@@ -8,6 +8,7 @@ import { Image } from "astro:assets";
 type Props = { title?: string; description?: string; hero_image?: string };
 
 const { title, description, hero_image } = Astro.props;
+console.log(hero_image)
 ---
 
 <html lang="en">
@@ -32,6 +33,7 @@ const { title, description, hero_image } = Astro.props;
                 <Image
                   id="HERO_IMAGE"
                   src={hero_image as any}
+				  format="webp"
                   alt="hero image"
                 />
               )}

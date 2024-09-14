@@ -11,7 +11,11 @@ import Image from "./Image.astro";
         class={"icon cabin"}
         type="icon"
         src="/test.png"
-        format="webp"
+        width="48"
+        height="48"
+        widths={[48]}
+        sizes="3rem"
+        format="avif"
         alt="Home"
         title="Home"
       />
@@ -23,7 +27,8 @@ import Image from "./Image.astro";
           class={"icon backpack"}
           type="icon"
           src="/backpack-cropped.png"
-          format="webp"
+          widths={[32]}
+          format="avif"
           alt="Checkout"
           title="Checkout"
         />
@@ -74,21 +79,7 @@ import Image from "./Image.astro";
     a {
       display: contents;
     }
-    .icon {
-      pointer-events: initial;
-    }
-    .icon.cabin {
-      --dims: 3rem;
-      width: var(--dims);
-      height: var(--dims);
-    }
-    .icon.backpack {
-      margin-top: 0.38rem;
-      margin-right: 0.6rem;
-      --dims: 2rem;
-      width: var(--dims);
-      height: var(--dims);
-    }
+
     h2 {
       margin: 0;
       font-size: 1rem;
