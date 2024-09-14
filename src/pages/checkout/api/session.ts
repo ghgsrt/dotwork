@@ -101,9 +101,14 @@ export const PATCH = async (context: APIContext): Promise<Response> => {
 
   const sessionCookie = context.cookies.get("STRIPE_SESSION")?.value;
   if (!sessionCookie)
-    return new Response("No Stripe checkout session exists for this user.", {
-      status: 400,
-    });
+    return new Response(
+      JSON.stringify({
+        error: "No Stripe checkout session exists for this user.",
+      }),
+      {
+        status: 400,
+      },
+    );
 
   const line_items = await getAllLineItems(sessionCookie);
 
@@ -150,9 +155,14 @@ export const DELETE = async (context: APIContext): Promise<Response> => {
 
   const sessionCookie = context.cookies.get("STRIPE_SESSION")?.value;
   if (!sessionCookie)
-    return new Response("No Stripe checkout session exists for this user.", {
-      status: 400,
-    });
+    return new Response(
+      JSON.stringify({
+        error: "No Stripe checkout session exists for this user.",
+      }),
+      {
+        status: 400,
+      },
+    );
 
   const line_items = await getAllLineItems(sessionCookie);
 
