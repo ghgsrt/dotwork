@@ -74,7 +74,9 @@ console.log(hero_image);
       <Footer />
     </div>
     <div id="admin-portal" class="hide"></div>
-    <div id="cursor"></div>
+    <div id="cursor-container">
+      <div id="cursor"></div>
+    </div>
   </body>
 </html>
 
@@ -105,8 +107,8 @@ console.log(hero_image);
   window.addEventListener("contextmenu", () => (cursor.style.transform = last));
 
   const move = (event: MouseEvent) => {
-    cursor.style.top = event.clientY + window.scrollY - 15 + "px";
-    cursor.style.left = event.clientX + window.scrollX - 2 + "px";
+    cursor.style.top = event.clientY - 15 + "px";
+    cursor.style.left = event.clientX - 2 + "px";
   };
   document.documentElement.addEventListener("mousemove", move);
   document.documentElement.addEventListener("drag", move);
@@ -126,7 +128,7 @@ console.log(hero_image);
   //       document.documentElement.dataset.theme = newTheme;
   //       localStorage.setItem("theme", newTheme);
   //     });
-  console.log(document.cookie)
+  console.log(document.cookie);
   const bag = document.getElementById("bag")!;
   const res = await fetch("/checkout/api/bag");
   if (res.ok) {
@@ -145,6 +147,16 @@ console.log(hero_image);
 </script>
 
 <style>
+  #cursor-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    max-height: 100vh;
+    max-width: 100vw;
+    z-index: 10000;
+    pointer-events: none;
+    background: red !important;
+  }
   .heading {
     display: flex;
     flex-direction: column;
