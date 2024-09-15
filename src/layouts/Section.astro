@@ -81,45 +81,58 @@ console.log(hero_image);
 </html>
 
 <script>
-  const cursor = document.getElementById("cursor")!;
+  const IS_IOS =
+    /iPad|iPhone|iPod/.test(navigator.userAgent) &&
+    (!Object.hasOwn(window, "MSStream") || !(window as any).MSStream);
 
-  window.addEventListener("mousemove", () => (cursor.style.display = "block"), {
-    once: true,
-  });
+  if (!IS_IOS) {
+    const cursor = document.getElementById("cursor")!;
 
-  let last: string;
-  window.addEventListener("dragend", (event) => {
-    if (event.button !== 0) return;
+    window.addEventListener(
+      "mousemove",
+      () => (cursor.style.display = "block"),
+      {
+        once: true,
+      },
+    );
 
-    cursor.style.transform = last;
-  });
-  window.addEventListener("mouseup", (event) => {
-    if (event.button !== 0) return;
+    let last: string;
+    window.addEventListener("dragend", (event) => {
+      if (event.button !== 0) return;
 
-    cursor.style.transform = last;
-  });
-  window.addEventListener("mousedown", (event) => {
-    if (event.button !== 0) return;
+      cursor.style.transform = last;
+    });
+    window.addEventListener("mouseup", (event) => {
+      if (event.button !== 0) return;
 
-    last = cursor.style.transform;
-    cursor.style.transform = "rotate(-30deg)";
-  });
-  window.addEventListener("contextmenu", () => (cursor.style.transform = last));
+      cursor.style.transform = last;
+    });
+    window.addEventListener("mousedown", (event) => {
+      if (event.button !== 0) return;
 
-  const move = (event: MouseEvent) => {
-    cursor.style.top = event.clientY - 15 + "px";
-    cursor.style.left = event.clientX - 2 + "px";
-  };
-  document.documentElement.addEventListener("mousemove", move);
-  document.documentElement.addEventListener("drag", move);
-  document.documentElement.addEventListener(
-    "mouseleave",
-    () => (cursor.style.display = "none"),
-  );
-  document.documentElement.addEventListener(
-    "mouseenter",
-    () => (cursor.style.display = "block"),
-  );
+      last = cursor.style.transform;
+      cursor.style.transform = "rotate(-30deg)";
+    });
+    window.addEventListener(
+      "contextmenu",
+      () => (cursor.style.transform = last),
+    );
+
+    const move = (event: MouseEvent) => {
+      cursor.style.top = event.clientY - 15 + "px";
+      cursor.style.left = event.clientX - 2 + "px";
+    };
+    document.documentElement.addEventListener("mousemove", move);
+    document.documentElement.addEventListener("drag", move);
+    document.documentElement.addEventListener(
+      "mouseleave",
+      () => (cursor.style.display = "none"),
+    );
+    document.documentElement.addEventListener(
+      "mouseenter",
+      () => (cursor.style.display = "block"),
+    );
+  }
 
   //   window
   //     .matchMedia("(prefers-color-scheme: dark)")
