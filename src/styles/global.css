@@ -61,6 +61,7 @@ video {
   padding-left: 0.25rem;
   margin-top: 3rem;
   border-left: 0.125rem solid var(--secondary);
+  background-color: var(--primary);
 }
 #admin-portal summary {
   font-weight: bold;
