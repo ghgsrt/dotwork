@@ -27,10 +27,8 @@ console.log(hero_image);
           hero_image && (
             <div class="heading">
               <video
-                style={{
-                  width: "100%",
-                }}
-                src="BIGMOVIE.mp4"
+                style={{ width: "100%" }}
+                src="BIGMOVIE-cropped.mp4"
                 autoplay
                 muted
                 loop
@@ -88,6 +86,18 @@ console.log(hero_image);
     const currentTop = el.getBoundingClientRect().top;
     el.classList.toggle("stuck", currentTop === stickyTop);
   });
+
+  const heading = document.querySelector(".heading")! as HTMLDivElement;
+  const video = document.querySelector("video")!;
+  const floater = document.querySelector(".floater")! as HTMLDivElement;
+
+  const setVideoHeight = () => {
+    const videoHeight = window.getComputedStyle(video).height;
+    heading.style.height = `min(${videoHeight}, 480px)`;
+    floater.style.top = Math.min(parseInt(videoHeight), 480) / 2 + "px";
+  };
+  window.addEventListener("resize", setVideoHeight);
+  window.addEventListener("load", setVideoHeight);
 
   const IS_IOS =
     /iPad|iPhone|iPod/.test(navigator.userAgent) &&
@@ -192,7 +202,7 @@ console.log(hero_image);
   }
   video {
     position: absolute;
-    top: -10rem;
+    top: 2.85rem;
     z-index: 5;
   }
   .heading > div {
@@ -263,7 +273,7 @@ console.log(hero_image);
     position: absolute;
     height: 90%;
     width: 100%;
-    top: 14rem;
+    /* top: 14rem; */
     pointer-events: none;
   }
 </style>
