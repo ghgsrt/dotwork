@@ -12,16 +12,15 @@ export const GET = async (context: APIContext): Promise<Response> => {
     import.meta.env.ADMIN_COOKIE_VALUE
   )
     return new Response("", { status: 400 });
-//   console.log(context.url.pathname);
-//   const path = context.url.pathname.split("/");
-//   const target = path.pop() || path.pop()!;
-//   console.log(target);
+  //   console.log(context.url.pathname);
+  //   const path = context.url.pathname.split("/");
+  //   const target = path.pop() || path.pop()!;
+  //   console.log(target);
 
   // canonical url
   const _portal = await fetch(`${SITE_URL}/admin/portal`);
   console.log("_portal", _portal);
-  const portal = await _portal.text();
-  console.log("portal", portal);
+  const portal = _portal.text();
   //   const filePrefix =
   //     target === "portal"
   //       ? "home"
@@ -38,22 +37,27 @@ export const GET = async (context: APIContext): Promise<Response> => {
   //   );
 
   //   const jsFiles: Promise<string>[] = [fs.readFile(jsFilePath, "utf-8")];
-  const jsFiles: Promise<string>[] = [];
+  const jsFiles: Promise<Response>[] = [];
   for (const script of scripts) {
-    const extraFilePath = join(
-      process.cwd(),
-      "js",
-      `${script}.js`,
-    );
+    // const extraFilePath = join(
+    //   process.cwd(),
+    //   "js",
+    //   `${script}.js`,
+    // );
 
-    const scriptContent = fs.readFile(extraFilePath, "utf-8");
+    const res = fetch(`${SITE_URL}/js/${script}.js`);
+    // const scriptContent = fs.readFile(extraFilePath, "utf-8");
 
-    jsFiles.push(scriptContent);
+    jsFiles.push(res);
   }
 
   return new Response(
     JSON.stringify({
-      js: (await Promise.all(jsFiles)).join(";"),
+      js: (
+        await Promise.all(
+          (await Promise.all(jsFiles)).map((file) => file.text()),
+        )
+      ).join(";"),
       html: await portal,
     }),
     {
