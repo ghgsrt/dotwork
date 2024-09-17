@@ -1,24 +1,21 @@
-import type { Context, Config } from "@netlify/functions";
-import { s3 } from "../../api/s3";
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
+import { s3 } from "../../../../api/s3";
+import type { APIContext } from "astro";
 
-export const GetBucketKeys = async (request: Request, context: Context) => {
+export const GET = async (context: APIContext) => {
   if (
-    context.cookies.get(Netlify.env.get("COOKIE_KEY")!) !==
-    Netlify.env.get("COOKIE_VALUE")!
+    context.cookies.get(import.meta.env.COOKIE_KEY!)?.value !==
+    import.meta.env.COOKIE_VALUE!
   )
     return new Response(
       JSON.stringify({ error: "Invalid or expired cookie" }),
       { status: 400 },
     );
-  console.log("bruh");
 
   let imageKeys: any[] = [];
   try {
     const command = new ListObjectsV2Command({
-      Bucket: Netlify.env.get("CLOUDFLARE_BUCKET_IMAGES"),
-      // You can add a Prefix here if you want to list objects in a specific "folder"
-      // Prefix: "images/",
+      Bucket: import.meta.env.CLOUDFLARE_BUCKET_IMAGES,
     });
 
     let isTruncated: boolean | undefined = true;
@@ -47,9 +44,4 @@ export const GetBucketKeys = async (request: Request, context: Context) => {
   return new Response(JSON.stringify(imageKeys));
 };
 
-export default GetBucketKeys;
-
-export const config: Config = {
-  path: "/admin/api/bucket-keys",
-  method: ["GET"],
-};
+export const prerender = false;
