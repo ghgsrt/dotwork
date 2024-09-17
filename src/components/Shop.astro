@@ -22,6 +22,7 @@ const prices: Stripe.Price[] = products.map(
         link={product.active ? `/shop/${product.name}/` : ""}
         images={product.images}
         alts={product.description}
+		loading="eager"
       >
         <div class="info">
           <h4 class="title floating">
@@ -113,7 +114,7 @@ const prices: Stripe.Price[] = products.map(
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 0.5rem;
     width: 100%;
-    height: 100%;
+    height: min-content;
   }
 
   @media (max-width: 1280px) {
@@ -144,7 +145,7 @@ const prices: Stripe.Price[] = products.map(
     z-index: 2;
     max-width: 100%;
     max-height: 100%;
-    object-fit: contain;
+    object-fit: cover;
   }
   .product .info {
     display: flex;
@@ -159,6 +160,7 @@ const prices: Stripe.Price[] = products.map(
     opacity: 0;
     transition: opacity 150ms ease-in-out;
     z-index: 3;
+	background-color: red; 
   }
   .product > div:first-child:hover .info {
     opacity: 1;

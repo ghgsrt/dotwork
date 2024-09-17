@@ -582,8 +582,11 @@ button:hover {
 
 .floating {
   position: relative;
+  /* text-shadow: black 0 0 2px, var(--other-secondary) 0 0 2px; */
+  text-shadow: var(--primary) 0 0 4px, var(--primary-low-opac) 0 0 8px;
+  color: var(--secondary);
 }
-.floating > * {
+/* .floating > * {
   position: relative;
   z-index: 1000 !important;
 }
@@ -605,16 +608,16 @@ button:hover {
 .floating.solid::before {
   opacity: 0.85;
   /* --float-color: #fefefedd; */
-}
+/* }
 .floating.very-solid {
   padding: 1rem;
   padding-top: 0;
 }
 .floating.very-solid::before {
   /* --float-color: #fefefe; */
-  opacity: 1;
+/* opacity: 1;
   box-shadow: none;
-}
+}  */
 
 .image-thing > :first-child > :last-child:not(:first-child) {
   display: flex;
@@ -629,6 +632,7 @@ button:hover {
   opacity: 0;
   transition: opacity 150ms ease-in-out;
   z-index: 3;
+  background-color: color-mix(in srgb, var(--primary), transparent 55%);
 }
 .image-thing > :first-child:hover > :last-child:not(:first-child) {
   opacity: 1;

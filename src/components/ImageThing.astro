@@ -12,6 +12,8 @@ const {
   height,
   allowResize,
   allowZoom,
+  loading,
+  loadingMini,
 } = Astro.props;
 const Tag = link ? "a" : "div";
 console.log(allowZoom);
@@ -46,12 +48,6 @@ console.log(allowZoom);
       {
         images.map((image: string, i: number) => (
           <div class={`image-container ${i === 0 ? "selected" : ""}`}>
-            {/* <AstroImage
-              class="product-image"
-              inferSize={true}
-              src={image}
-              alt={alts?.[i] ?? alts ?? ""}
-            /> */}
             <AstroImage
               class="product-image"
               src={`${image}`}
@@ -59,14 +55,10 @@ console.log(allowZoom);
               height={allowResize ? "0" : height}
               format="webp"
               alt={alts?.[i] ?? alts ?? ""}
+              loading={loading}
+              style={allowResize ? {} : { objectFit: "cover" }}
             />
             {allowResize && (
-              /*<AstroImage
-                class="product-image preview"
-                inferSize={true}
-                src={image}
-                alt={alts?.[i] ?? alts ?? ""}
-              />*/
               <AstroImage
                 class={`preview`}
                 width={allowResize ? "0" : width}
@@ -92,9 +84,11 @@ console.log(allowZoom);
           <AstroImage
             width={allowResize ? "0" : width}
             height={allowResize ? "0" : height}
+            style={allowResize ? {} : { objectFit: "cover" }}
             src={image}
             format="webp"
             alt={alts?.[i] ?? alts ?? ""}
+            loading={loadingMini ?? loading}
           />
         </div>
       ))

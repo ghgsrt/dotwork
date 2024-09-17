@@ -3,7 +3,6 @@ import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
-import { Image } from "astro:assets";
 
 type Props = { title?: string; description?: string; hero_image?: string };
 
@@ -25,7 +24,12 @@ console.log(hero_image);
       <main>
         {
           hero_image && (
-            <div class="heading">
+            <div
+              class="heading"
+              style={{
+                height: `min(var(--max-width) * 0.458, 480px)`,
+              }}
+            >
               <video
                 style={{ width: "100%" }}
                 src="BIGMOVIE-cropped.mp4"
@@ -36,8 +40,16 @@ console.log(hero_image);
             </div>
           )
         }
+        <hr />
 
-        <div style={!hero_image ? { top: 0 } : {}} class="floater">
+        <div
+          style={!hero_image
+            ? { top: 0 }
+            : {
+                top: `calc(min(var(--max-width) * 0.459, 480px) / 2)`,
+              }}
+          class="floater"
+        >
           <hr
             style={{
               width: `${import.meta.env.HEADER.length}ch`,
@@ -49,6 +61,7 @@ console.log(hero_image);
           <h1 id="HEADER" class={`stick ${!hero_image ? "very-solid" : ""}`}>
             <span>Dotwork Pete</span>
           </h1>
+          <h5 id="DESCRIPTION" class="stick">{description}</h5>
         </div>
         <br />
         {!hero_image && description && <p id="DESCRIPTION">{description}</p>}
@@ -81,23 +94,13 @@ console.log(hero_image);
 
 <script>
   const el = document.getElementById("deez")!;
-  window.addEventListener("scroll", () => {
+  const checkStuck = () => {
     const stickyTop = parseInt(window.getComputedStyle(el).top);
     const currentTop = el.getBoundingClientRect().top;
     el.classList.toggle("stuck", currentTop === stickyTop);
-  });
-
-  const heading = document.querySelector(".heading")! as HTMLDivElement;
-  const video = document.querySelector("video")!;
-  const floater = document.querySelector(".floater")! as HTMLDivElement;
-
-  const setVideoHeight = () => {
-    const videoHeight = window.getComputedStyle(video).height;
-    heading.style.height = `min(${videoHeight}, 480px)`;
-    floater.style.top = Math.min(parseInt(videoHeight), 480) / 2 + "px";
   };
-  window.addEventListener("resize", setVideoHeight);
-  window.addEventListener("load", setVideoHeight);
+  window.addEventListener("scroll", checkStuck);
+  window.addEventListener("load", checkStuck);
 
   const IS_IOS =
     /iPad|iPhone|iPod/.test(navigator.userAgent) &&
@@ -159,18 +162,15 @@ console.log(hero_image);
   //       document.documentElement.dataset.theme = newTheme;
   //       localStorage.setItem("theme", newTheme);
   //     });
-  console.log(document.cookie);
   const bag = document.getElementById("bag")!;
   const res = await fetch("/checkout/api/bag");
   if (res.ok) {
     const currentBag = await res.json();
-    console.log("what", currentBag);
-    //   const bag = localStorage.getItem("dotwork-bag");
-    //   if (!bag || bag === "undefined")
+
     localStorage.setItem("dotwork-bag", JSON.stringify(currentBag));
-    const temp = JSON.parse(localStorage.getItem("dotwork-bag")!);
-    if (Array.isArray(temp))
-      bag.dataset.quantity = temp.reduce(
+
+    if (Array.isArray(currentBag))
+      bag.dataset.quantity = currentBag.reduce(
         (acc: number, curr: any) => acc + curr.quantity,
         0,
       );
@@ -196,7 +196,7 @@ console.log(hero_image);
     flex-direction: column;
     align-items: center;
     position: relative;
-    height: 30rem;
+    /* height: 30rem; */
     overflow: hidden;
     z-index: 9;
   }
@@ -228,7 +228,10 @@ console.log(hero_image);
   #DESCRIPTION {
     text-align: center;
     position: relative;
-    z-index: 3;
+    z-index: 98;
+    color: var(--primary);
+    text-shadow: var(--other-secondary) 0px 0 3px;
+    top: 0rem;
   }
   .stick {
     position: sticky;
@@ -243,6 +246,7 @@ console.log(hero_image);
     z-index: 100000;
     border-radius: 19rem;
     width: fit-content;
+    text-shadow: var(--primary-low-opac) 0px 0 3px;
     /* color: var(--primary) */
   }
   /* #HEADER::before {
