@@ -12,10 +12,10 @@ export const GET = async (context: APIContext): Promise<Response> => {
     import.meta.env.ADMIN_COOKIE_VALUE
   )
     return new Response("", { status: 400 });
-  console.log(context.url.pathname);
-  const path = context.url.pathname.split("/");
-  const target = path.pop() || path.pop()!;
-  console.log(target);
+//   console.log(context.url.pathname);
+//   const path = context.url.pathname.split("/");
+//   const target = path.pop() || path.pop()!;
+//   console.log(target);
 
   // canonical url
   const _portal = await fetch(`${SITE_URL}/admin/portal`);
@@ -60,7 +60,7 @@ export const GET = async (context: APIContext): Promise<Response> => {
     }),
     {
       headers: {
-        "Content-Type": "application/javascript",
+        "Content-Type": "application/json",
       },
     },
   );
