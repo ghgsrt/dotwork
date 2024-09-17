@@ -42,8 +42,6 @@ export const GET = async (context: APIContext): Promise<Response> => {
   for (const script of scripts) {
     const extraFilePath = join(
       process.cwd(),
-      "src",
-      "assets",
       "js",
       `${script}.js`,
     );
