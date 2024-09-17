@@ -60,10 +60,13 @@ export const DELETE = async (context: APIContext): Promise<Response> => {
   const id = (await context.request.json()).id;
 
   const prices = (await stripe.prices.list({ product: id })).data;
-  for (const price of prices) stripe.prices.update(price.id, { active: false });
 
-  const temp = await stripe.products.update(id, { active: false });
+  const temp = await stripe.products.update(id, {
+    active: false,
+    default_price: undefined,
+  });
   console.log(temp.active);
+  for (const price of prices) stripe.prices.update(price.id, { active: false });
 
   const res = await fetch(import.meta.env.ADMIN_REDEPLOY, {
     method: "POST",
