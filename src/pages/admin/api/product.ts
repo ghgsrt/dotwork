@@ -37,7 +37,9 @@ export const POST = async (context: APIContext): Promise<Response> => {
 
   console.log(product);
 
-  const res = await fetch(import.meta.env.ADMIN_REDEPLOY);
+  const res = await fetch(import.meta.env.ADMIN_REDEPLOY, {
+    method: "POST",
+  });
   console.log(res);
 
   return new Response("", { status: 200 });
@@ -63,7 +65,9 @@ export const DELETE = async (context: APIContext): Promise<Response> => {
   const temp = await stripe.products.update(id, { active: false });
   console.log(temp.active);
 
-  const res = await fetch(import.meta.env.ADMIN_REDEPLOY);
+  const res = await fetch(import.meta.env.ADMIN_REDEPLOY, {
+    method: "POST",
+  });
   console.log(res);
 
   return new Response("", { status: 200 });

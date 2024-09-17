@@ -40,7 +40,9 @@ export const PUT = async (context: APIContext): Promise<Response> => {
       throw new Error(`HTTP error! status: ${await response.text()}`);
   }
 
-  const res = await fetch(import.meta.env.ADMIN_REDEPLOY);
+  const res = await fetch(import.meta.env.ADMIN_REDEPLOY, {
+    method: "POST",
+  });
   console.log(res);
 
   return new Response("", { status: 200 });
