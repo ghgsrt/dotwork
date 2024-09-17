@@ -1,6 +1,7 @@
 import type { APIContext } from "astro";
 import { promises as fs } from "fs";
 import { join } from "path";
+import { SITE_URL } from "../../../friendlyConsts";
 
 const pages = ["shop"];
 const scripts = ["initAdminPortal", "themeToggle"];
@@ -17,9 +18,7 @@ export const GET = async (context: APIContext): Promise<Response> => {
   console.log(target);
 
   // canonical url
-  const portal = fetch("http://localhost:8888/admin/portal").then((val) =>
-    val.text(),
-  );
+  const portal = fetch(`${SITE_URL}/admin/portal`).then((val) => val.text());
 
   //   const filePrefix =
   //     target === "portal"
