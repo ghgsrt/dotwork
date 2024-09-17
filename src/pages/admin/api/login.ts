@@ -29,7 +29,7 @@ export const POST = async (context: APIContext): Promise<Response> => {
   return new Response("", {
     status: 200,
     headers: {
-      "Set-Cookie": `${import.meta.env.ADMIN_COOKIE_KEY}=${import.meta.env.ADMIN_COOKIE_VALUE}; Path=/; HttpOnly=true; Secure=true; SameSite=Strict; MaxAge=3600`,
+      "Set-Cookie": `${import.meta.env.ADMIN_COOKIE_KEY}=${import.meta.env.ADMIN_COOKIE_VALUE}; Path=/; HttpOnly=true; Secure=true; SameSite=Lax`,
     },
   });
 };
