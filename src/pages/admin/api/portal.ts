@@ -19,7 +19,7 @@ export const GET = async (context: APIContext): Promise<Response> => {
 
   // canonical url
   const portal = fetch(`${SITE_URL}/admin/portal`).then((val) => val.text());
-
+  console.log(await portal);
   //   const filePrefix =
   //     target === "portal"
   //       ? "home"
@@ -51,21 +51,17 @@ export const GET = async (context: APIContext): Promise<Response> => {
     jsFiles.push(scriptContent);
   }
 
-  try {
-    return new Response(
-      JSON.stringify({
-        js: (await Promise.all(jsFiles)).join(";"),
-        html: await portal,
-      }),
-      {
-        headers: {
-          "Content-Type": "application/javascript",
-        },
+  return new Response(
+    JSON.stringify({
+      js: (await Promise.all(jsFiles)).join(";"),
+      html: await portal,
+    }),
+    {
+      headers: {
+        "Content-Type": "application/javascript",
       },
-    );
-  } catch (error) {
-    return new Response("File not found", { status: 404 });
-  }
+    },
+  );
 };
 
 export const prerender = false;
