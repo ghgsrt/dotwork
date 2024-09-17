@@ -18,8 +18,10 @@ export const GET = async (context: APIContext): Promise<Response> => {
   console.log(target);
 
   // canonical url
-  const portal = fetch(`${SITE_URL}/admin/portal`).then((val) => val.text());
-  console.log(await portal);
+  const _portal = await fetch(`${SITE_URL}/admin/portal`);
+  console.log("_portal", _portal);
+  const portal = await _portal.text();
+  console.log("portal", portal);
   //   const filePrefix =
   //     target === "portal"
   //       ? "home"
