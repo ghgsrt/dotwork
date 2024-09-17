@@ -24,42 +24,41 @@ console.log(hero_image);
       <Header />
       <main>
         {
-          title && (
-            <div
-              class="heading"
-              style={{ marginTop: !hero_image ? "1.1rem" : "" }}
-            >
-              {hero_image && (
-                <Image
-                  id="HERO_IMAGE"
-                  src={hero_image as any}
-                  format="webp"
-                  alt="hero image"
-                />
-              )}
-              <div>
-                <h1
-                  id="HEADER"
-                  class={`floating ${!hero_image ? "very-solid" : ""}`}
-                >
-                  <span>Dotwork Pete</span>
-                </h1>
-                {hero_image && description && (
-                  <span class="floating ">
-                    <p id="DESCRIPTION">{description}</p>
-                  </span>
-                )}
-              </div>
+          hero_image && (
+            <div class="heading">
+              <video
+                style={{
+                  width: "100%",
+                }}
+                src="BIGMOVIE.mp4"
+                autoplay
+                muted
+                loop
+              />
             </div>
           )
         }
-        <br />
-        <hr />
+
+        <div style={!hero_image ? { top: 0 } : {}} class="floater">
+          <hr
+            style={{
+              width: `${import.meta.env.HEADER.length}ch`,
+              left: `calc(50% - ${import.meta.env.HEADER.length}ch / 2)`,
+            }}
+            id="deez"
+            class={!hero_image ? "stuck" : ""}
+          />
+          <h1 id="HEADER" class={`stick ${!hero_image ? "very-solid" : ""}`}>
+            <span>Dotwork Pete</span>
+          </h1>
+        </div>
         <br />
         {!hero_image && description && <p id="DESCRIPTION">{description}</p>}
         <div class={`spacer ${hero_image ? "hide" : ""}`}>
           <br />
           <br />
+          <br />
+
           {
             description && (
               <>
@@ -69,7 +68,9 @@ console.log(hero_image);
             )
           }
         </div>
-        <slot />
+        <div style={{ padding: "0 0.75rem" }}>
+          <slot />
+        </div>
       </main>
       <Footer />
     </div>
@@ -81,6 +82,13 @@ console.log(hero_image);
 </html>
 
 <script>
+  const el = document.getElementById("deez")!;
+  window.addEventListener("scroll", () => {
+    const stickyTop = parseInt(window.getComputedStyle(el).top);
+    const currentTop = el.getBoundingClientRect().top;
+    el.classList.toggle("stuck", currentTop === stickyTop);
+  });
+
   const IS_IOS =
     /iPad|iPhone|iPod/.test(navigator.userAgent) &&
     (!Object.hasOwn(window, "MSStream") || !(window as any).MSStream);
@@ -132,7 +140,7 @@ console.log(hero_image);
       "mouseenter",
       () => (cursor.style.display = "block"),
     );
-  }
+  } else document.getElementById("cursor-container")!.style.display = "none";
 
   //   window
   //     .matchMedia("(prefers-color-scheme: dark)")
@@ -160,13 +168,16 @@ console.log(hero_image);
 </script>
 
 <style>
+  main {
+    position: relative;
+  }
   #cursor-container {
     position: fixed;
     top: 0;
     left: 0;
     max-height: 100vh;
     max-width: 100vw;
-    z-index: 10000;
+    z-index: 1000000;
     pointer-events: none;
     background: red !important;
   }
@@ -175,6 +186,14 @@ console.log(hero_image);
     flex-direction: column;
     align-items: center;
     position: relative;
+    height: 30rem;
+    overflow: hidden;
+    z-index: 9;
+  }
+  video {
+    position: absolute;
+    top: -10rem;
+    z-index: 5;
   }
   .heading > div {
     display: flex;
@@ -200,5 +219,51 @@ console.log(hero_image);
     text-align: center;
     position: relative;
     z-index: 3;
+  }
+  .stick {
+    position: sticky;
+    top: 3.35rem;
+    z-index: 1000;
+  }
+  #HEADER {
+    /* position: absolute; */
+    top: 1.25rem;
+    /* background-color: var(--primary); */
+    padding: 0 1rem;
+    z-index: 100000;
+    border-radius: 19rem;
+    width: fit-content;
+    /* color: var(--primary) */
+  }
+  /* #HEADER::before {
+    content: "";
+    position: absolute;
+    background-color: var(--primary);
+    height: 0.125rem;
+    left: -0.25rem;
+    top: 49%;
+    width: 100%;
+	z-index: 0;
+  } */
+  hr {
+    width: 100%;
+  }
+  hr#deez {
+    position: sticky;
+    top: 3rem;
+    z-index: 100;
+    border-color: transparent;
+    font-size: 2.65rem;
+  }
+  hr#deez.stuck {
+    border-color: var(--primary);
+  }
+
+  .floater {
+    position: absolute;
+    height: 90%;
+    width: 100%;
+    top: 14rem;
+    pointer-events: none;
   }
 </style>

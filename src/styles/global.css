@@ -5,9 +5,10 @@
  */
 
 :root {
-  --primary: white;
+  --primary: #eaeaea;
   --primary-low-opac: #fffd;
   --secondary: black;
+  --other-secondary: rgba(0, 0, 0, 0.867);
   /* --accent: #2337ff; */
   --accent: #62a4a3;
   --accent-dark: #000d8a;
@@ -31,6 +32,9 @@
   /* --max-width: min(100vw, calc(100dvh * 4 / 3)); */
   /* --min-width: min(100vw, (calc(100dvh * 2 / 3))); */
   /* font-size: calc(var(--min-width) / 35); */
+}
+video {
+  z-index: 0;
 }
 @font-face {
   font-family: "Atkinson";
@@ -219,7 +223,7 @@ body {
   padding: 0; */
   text-align: left;
   /* background: linear-gradient(var(--gray-gradient)) no-repeat; */
-  background: var(--primary);
+  background: var(--other-secondary);
   transition: background 500ms ease;
   /* background-size: 100% 600px; */
   word-wrap: break-word;
@@ -236,6 +240,10 @@ body {
   margin: 0 auto;
   position: relative;
   overflow-x: hidden;
+}
+main {
+  background: var(--primary);
+  padding-bottom: 2rem !important;
 }
 body > div:first-of-type {
   width: 100%;
@@ -291,7 +299,7 @@ img {
   height: var(--dims);
 }
 .icon.backpack {
-  margin-top: 0.38rem;
+  margin-top: 0.5rem;
   margin-right: 0.6rem;
   --dims: 2rem;
   width: var(--dims);
@@ -300,7 +308,7 @@ img {
 
 main {
   max-width: var(--max-width);
-  padding: 0.25rem 0.75rem;
+  padding: 0.25rem 0;
 
   width: 100%;
   /* max-width: var(--width-large); */

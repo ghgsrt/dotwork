@@ -3,126 +3,147 @@
 import Image from "./Image.astro";
 ---
 
-<header>
-  <nav>
-    <a href="/">
-      <!-- @ts-ignore -->
-      <Image
-        class={"icon cabin"}
-        type="icon"
-        src="/test.png"
-        width="48"
-        height="48"
-        widths={[48]}
-        sizes="3rem"
-        format="avif"
-        alt="Home"
-        title="Home"
-      />
-    </a>
-    <span id="bag">
-      <a id="checkout-link" href="/checkout">
-        <!-- @ts-ignore -->
-        <Image
-          class={"icon backpack"}
-          type="icon"
-          src="/backpack-cropped.png"
-          widths={[32]}
-          format="avif"
-          alt="Checkout"
-          title="Checkout"
-        />
-      </a>
-    </span>
-  </nav>
+<div>
+  <header>
+    <nav>
+      <span>
+        <a href="/">
+          <!-- @ts-ignore -->
+          <Image
+            class={"icon cabin"}
+            type="icon"
+            src="/test.png"
+            width="48"
+            height="48"
+            widths={[48]}
+            sizes="3rem"
+            format="avif"
+            alt="Home"
+            title="Home"
+          />
+        </a>
+      </span>
+      <span id="bag">
+        <a id="checkout-link" href="/checkout">
+          <!-- @ts-ignore -->
+          <Image
+            class={"icon backpack"}
+            type="icon"
+            src="/backpack-cropped.png"
+            widths={[32]}
+            format="avif"
+            alt="Checkout"
+            title="Checkout"
+          />
+        </a>
+      </span>
+    </nav>
 
-  <script>
-    // const bag = document.getElementById("bag")!;
-    // const checkoutLink = document.getElementById(
-    //   "checkout-link",
-    // )! as HTMLFormElement;
+    <script>
+      // const bag = document.getElementById("bag")!;
+      // const checkoutLink = document.getElementById(
+      //   "checkout-link",
+      // )! as HTMLFormElement;
 
-    // bag.dataset.quantity = JSON.parse(
-    //   localStorage.getItem("dotwork-bag")!,
-    // ).reduce((acc: number, curr: any) => acc + curr.quantity, 0);
-    // bag.addEventListener("click", () => checkoutLink.submit());
-    // bag.addEventListener("click", async () => {
-    //   const bag = localStorage.getItem("dotwork-bag");
-    //   const res = await fetch("/api/checkout", {
-    //     method: "POST",
-    //     body: bag,
-    //   });
-    //   if (res.ok) window.location.href = await res.json();
-    // });
-  </script>
+      // bag.dataset.quantity = JSON.parse(
+      //   localStorage.getItem("dotwork-bag")!,
+      // ).reduce((acc: number, curr: any) => acc + curr.quantity, 0);
+      // bag.addEventListener("click", () => checkoutLink.submit());
+      // bag.addEventListener("click", async () => {
+      //   const bag = localStorage.getItem("dotwork-bag");
+      //   const res = await fetch("/api/checkout", {
+      //     method: "POST",
+      //     body: bag,
+      //   });
+      //   if (res.ok) window.location.href = await res.json();
+      // });
+    </script>
 
-  <style>
-    header {
-      --edge: calc((100% - var(--max-width)) / 2 + 1rem);
-      margin: 0;
-      padding: 0.15rem 0;
-      position: absolute;
-      left: var(--edge);
-      right: var(--edge);
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-      z-index: 3;
-      pointer-events: none;
-      /* background: white;
-    box-shadow: 0 2px 8px rgba(var(--black), 5%); */
-    }
+    <style>
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        z-index: 300000;
+        pointer-events: none;
+        background-color: var(--primary);
+        z-index: 100;
+        padding: 0 0.75rem;
+        /* background: white;
+		box-shadow: 0 2px 8px rgba(var(--black), 5%); */
+      }
 
-    .theme-toggle {
-      pointer-events: initial;
-    }
-    a {
-      display: contents;
-    }
+      .theme-toggle {
+        pointer-events: initial;
+      }
+      a {
+        display: contents;
+      }
+	  span {
+		position: relative;
+	  }
 
-    h2 {
-      margin: 0;
-      font-size: 1rem;
-    }
+      h2 {
+        margin: 0;
+        font-size: 1rem;
+      }
 
-    h2 a,
-    h2 a.active {
-      text-decoration: none;
-    }
-    nav {
-      /* margin: 0 auto; */
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      /* max-width: 60rem; */
-      width: 100%;
-    }
-    nav a {
-      padding: 1em 0.5em;
-      color: var(--black);
-      border-bottom: 4px solid transparent;
-      text-decoration: none;
-    }
-    nav a.active {
-      text-decoration: none;
-      border-bottom-color: var(--accent);
-    }
-    .internal-links:first-of-type {
-      width: 6ch;
-    }
-    .internal-links:last-of-type {
-    }
-    .social-links,
-    .social-links a {
-      display: flex;
-    }
-    .social-links:empty {
-      display: none;
-    }
-    @media (max-width: 720px) {
-      .social-links {
+      h2 a,
+      h2 a.active {
+        text-decoration: none;
+      }
+      nav {
+        /* margin: 0 auto; */
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        /* max-width: 60rem; */
+        width: 100%;
+      }
+      nav a {
+        padding: 1em 0.5em;
+        color: var(--black);
+        border-bottom: 4px solid transparent;
+        text-decoration: none;
+      }
+      nav a.active {
+        text-decoration: none;
+        border-bottom-color: var(--accent);
+      }
+      .internal-links:first-of-type {
+        width: 6ch;
+      }
+      .internal-links:last-of-type {
+      }
+      .social-links,
+      .social-links a {
+        display: flex;
+      }
+      .social-links:empty {
         display: none;
       }
-    }
-  </style>
-</header>
+      @media (max-width: 720px) {
+        .social-links {
+          display: none;
+        }
+      }
+      hr {
+        width: 100%;
+      }
+
+      div {
+        display: flex;
+        flex-direction: column;
+        --edge: calc((100% - var(--max-width)) / 2);
+        margin: 0;
+        /* padding: 0.15rem; */
+        /* padding: 0.15rem 0; */
+        position: fixed;
+        left: var(--edge);
+        right: var(--edge);
+        z-index: 99;
+      }
+    </style>
+  </header>
+  <hr />
+</div>
