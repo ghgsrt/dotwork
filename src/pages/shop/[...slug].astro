@@ -12,7 +12,9 @@ export async function getStaticPaths() {
     params: { slug: product.name },
     props: {
       product,
-      price: prices.find((price) => price.product === product.id),
+      price:
+        prices.find((price) => price.id === product.default_price) ??
+        prices.find((price) => price.product === product.id),
     },
   }));
 }

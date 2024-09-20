@@ -40,7 +40,7 @@ console.log(hero_image);
             </div>
           )
         }
-        <hr />
+        <hr id="to-be-cut" />
 
         <div
           style={!hero_image
@@ -50,14 +50,6 @@ console.log(hero_image);
               }}
           class="floater"
         >
-          <hr
-            style={{
-              width: `${import.meta.env.HEADER.length}ch`,
-              left: `calc(50% - ${import.meta.env.HEADER.length}ch / 2)`,
-            }}
-            id="deez"
-            class={!hero_image ? "stuck" : ""}
-          />
           <h1 id="HEADER" class={`stick ${!hero_image ? "very-solid" : ""}`}>
             <span>Dotwork Pete</span>
           </h1>
@@ -79,9 +71,9 @@ console.log(hero_image);
             )
           }
         </div>
-        <div style={{ padding: "0 0.75rem" }}>
-          <slot />
-        </div>
+        <!-- <div style={{ padding: "0 0.75rem" }}> -->
+        <slot />
+        <!-- </div> -->
       </main>
       <Footer />
     </div>
@@ -93,14 +85,23 @@ console.log(hero_image);
 </html>
 
 <script>
-  const el = document.getElementById("deez")!;
-  const checkStuck = () => {
-    const stickyTop = parseInt(window.getComputedStyle(el).top);
+  const headerWidth = document.getElementById("deez")!.style.width;
+  document.documentElement.style.setProperty("--header-width", headerWidth);
+
+  const el = document.getElementById("to-be-cut")!;
+
+  const header = document.getElementById("HEADER")!;
+  const checkStuck = (el: HTMLElement) => () => {
+    const stickyTop = parseInt(window.getComputedStyle(el).top) || 53;
     const currentTop = el.getBoundingClientRect().top;
     el.classList.toggle("stuck", currentTop === stickyTop);
+    el.classList.toggle("almost-stuck", currentTop - stickyTop <= 9);
+    console.log(currentTop);
   };
-  window.addEventListener("scroll", checkStuck);
-  window.addEventListener("load", checkStuck);
+  window.addEventListener("scroll", checkStuck(el));
+  window.addEventListener("scroll", checkStuck(header));
+  window.addEventListener("load", checkStuck(el));
+  window.addEventListener("load", checkStuck(header));
 
   const IS_IOS =
     /iPad|iPhone|iPod/.test(navigator.userAgent) &&
@@ -245,9 +246,17 @@ console.log(hero_image);
     padding: 0 1rem;
     z-index: 100000;
     border-radius: 19rem;
+    color: var(--secondary);
     width: fit-content;
-    text-shadow: var(--primary-low-opac) 0px 0 3px;
+    /* mix-blend-mode: luminosity; */
+    text-shadow:
+      var(--primary) 1px 0 1px,
+      var(--primary) 0px 1px 1px,
+      var(--primary) -1px 0 1px,
+      var(--primary) 0px -1px 1px;
     /* color: var(--primary) */
+  }
+  #HEADER.almost-stuck {
   }
   /* #HEADER::before {
     content: "";
@@ -268,9 +277,13 @@ console.log(hero_image);
     z-index: 100;
     border-color: transparent;
     font-size: 2.65rem;
+    max-height: 0;
+    transition: max-height 500ms ease-in-out;
   }
-  hr#deez.stuck {
+  hr#deez:has(+ #HEADER.stuck) {
     border-color: var(--primary);
+    height: 100%;
+    max-height: 5rem;
   }
 
   .floater {

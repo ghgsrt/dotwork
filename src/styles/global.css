@@ -5,10 +5,12 @@
  */
 
 :root {
-  --primary: #eaeaea;
+  --clr-primary: #eaeaea;
+  --primary: var(--clr-primary);
   --primary-low-opac: #fffd;
-  --secondary: black;
-  --other-secondary: rgba(0, 0, 0, 0.867);
+  --clr-secondary: #222;
+  --secondary: var(--clr-secondary);
+  --other-secondary: #222;
   /* --accent: #2337ff; */
   --accent: #62a4a3;
   --accent-dark: #000d8a;
@@ -209,13 +211,13 @@ html {
 
 @media (prefers-color-scheme: dark) {
   html {
-    --primary: black;
-    --secondary: white;
+    --primary: var(--clr-secondary);
+    --secondary: var(--clr-secondary);
   }
 }
 html[data-theme="dark"] {
-  --primary: black;
-  --secondary: white;
+  --primary: var(--clr-secondary);
+  --secondary: var(--clr-secondary);
 }
 
 body {
@@ -583,7 +585,9 @@ button:hover {
 .floating {
   position: relative;
   /* text-shadow: black 0 0 2px, var(--other-secondary) 0 0 2px; */
-  text-shadow: var(--primary) 0 0 4px, var(--primary-low-opac) 0 0 8px;
+  text-shadow:
+    var(--primary) 0 0 4px,
+    var(--primary-low-opac) 0 0 8px;
   color: var(--secondary);
 }
 /* .floating > * {
@@ -637,4 +641,51 @@ button:hover {
 .image-thing > :first-child:hover > :last-child:not(:first-child) {
   opacity: 1;
   pointer-events: none;
+}
+
+body:has(#HEADER.almost-stuck) #deez {
+  border-color: var(--primary);
+  /* border-top-color: var(--primary);
+  max-height: 1.5rem; */
+  /* border-bottom-color: var(--secondary);
+  border-right-color: var(--secondary);
+  border-left-color: var(--secondary); */
+}
+body:has(#HEADER.stuck) #deez {
+}
+
+#to-be-cut.almost-stuck {
+  position: relative;
+  overflow: visible;
+}
+
+#to-be-cut.almost-stuck::before {
+  content: "";
+  position: absolute;
+  top: -0.0625rem;
+  left: calc(50% - var(--header-width) / 2);
+  width: var(--header-width);
+  font-size: 2.75rem;
+  height: 0.125rem;
+  background-color: var(--primary);
+  z-index: 10000;
+}
+
+.b-divider {
+  position: absolute;
+  bottom: 0rem;
+}
+.b-divider,
+.b-divider svg {
+  height: 10rem;
+  width: 100%;
+}
+iframe {
+  width: 100%;
+  background: transparent !important;
+  border: none !important;
+}
+
+body.chrome {
+  background-color: transparent !important;
 }

@@ -6,6 +6,8 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 import Section from "../layouts/Section.astro";
 import Shop from "../components/Shop.astro";
 import Contact from "../components/Contact.astro";
+import Instagram from "../components/Instagram.astro";
+import Denali from "../components/svgs/Denali.astro";
 
 export const prerender = true;
 ---
@@ -15,13 +17,24 @@ export const prerender = true;
   description={SITE_DESCRIPTION}
   hero_image={import.meta.env.HERO_IMAGE}
 >
-  <div>
-    <Shop />
-    <br />
+  <!-- <div> -->
+  <Shop />
+  <br />
+  <!-- <hr /> -->
+  <!-- <div id="divider1" class="wave-container"></div> -->
+  <!-- <br /> -->
+   <!-- <div class="svg-container"> -->
+
+	   <Denali />
+	<!-- </div> -->
+  <Contact />
+  <!-- <br />
     <hr />
-    <br />
-    <Contact />
-  </div>
+    <br /> -->
+  <!-- <div id="divider2" class="wave-container flip"></div> -->
+
+  <Instagram />
+  <!-- </div> -->
 </Section>
 
 <script>
@@ -64,4 +77,132 @@ export const prerender = true;
         adminPortal.classList.toggle("hide");
     }
   });
+
+  const WIDTH = 1000;
+  const HEIGHT = 100;
+  const ITERATIONS = 6;
+  const ROUGHNESS = 0.9;
+
+  generate();
+
+  async function generate() {
+    const svgDivider1 = await divider("divider1", "");
+    const svgDivider2 = await divider("divider2", "");
+    document.getElementById("divider1")!.innerHTML = svgDivider1;
+    document.getElementById("divider2")!.innerHTML = svgDivider2;
+  }
+
+  // mountain divider
+  async function divider(id, classes) {
+    const segments = Math.pow(2, ITERATIONS);
+    const points = line(
+      WIDTH,
+      displaceMap(HEIGHT, HEIGHT / 4, ROUGHNESS, segments),
+    );
+    const path = convertPath(WIDTH, HEIGHT, points);
+    const svg = genSvg(WIDTH, HEIGHT, path);
+
+    return `
+    <div id="${id}" class="b-divider ${classes}" role="img" aria-hidden="true">
+      ${svg}
+    </div>
+  `;
+  }
+
+  // generate midpoint displacement points
+  function displaceMap(height, displace, roughness, power) {
+    const points = [];
+
+    // set initial left point
+    points[0] = height / 2 + Math.random() * displace * 2 - displace;
+
+    // set initial right point
+    points[power] = height / 2 + Math.random() * displace * 2 - displace;
+    displace *= roughness;
+
+    // increase number of segments to maximum
+    for (let i = 1; i < power; i *= 2) {
+      // for each segment, find centre point
+      for (let j = power / i / 2; j < power; j += power / i) {
+        points[j] = (points[j - power / i / 2] + points[j + power / i / 2]) / 2;
+        points[j] += Math.random() * displace * 2 - displace;
+      }
+
+      // reduce random range
+      displace *= roughness;
+    }
+
+    return points;
+  }
+
+  // format points in [x, y] array
+  function line(width, points) {
+    const sep = width / (points.length - 1);
+    return points.map((val, i) => [i * sep, val]);
+  }
+
+  // convert points into SVG path
+  function convertPath(width, height, points) {
+    // add first M (move) command
+    const first = points.shift();
+    let path = `M ${first[0]} ${first[1]}`;
+
+    // iterate through points adding L (line) commands to path
+    points.forEach((val) => {
+      path += ` L ${val[0]} ${val[1]}`;
+    });
+
+    // close path
+    path += ` L ${width} ${height} L 0 ${height} Z`;
+
+    return path;
+  }
+
+  // generate SVG from path
+  function genSvg(width, height, path) {
+    return `
+    <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="currentColor" d="${path}"></path>
+    </svg>
+  `;
+  }
 </script>
+
+<style>
+  .wave-container {
+    height: 2rem;
+    background-color: eaeaea;
+    position: relative;
+    width: 100%;
+  }
+
+  .wave-container::before {
+    content: "";
+    width: calc(100% + 1.5rem);
+    /* height: 37px; */
+    position: absolute;
+    bottom: -0.3%;
+    left: -0.75rem;
+    /* background-size: auto; */
+    /* background-repeat: repeat no-repeat;
+    background-position: 36vw bottom;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 1200  134' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M0 98L50 92C100 86 200 74 300 50C400 26 500 -10 600 2C700 14 800 74 900 98C1000 122 1100 110 1150 104L1200 98V134H1150C1100 134 1000 134 900 134C800 134 700 134 600 134C500 134 400 134 300 134C200 134 100 134 50 134H0V98Z' fill='%23222222'/></svg>"); */
+  }
+
+  @media (max-width: 850px) {
+    .wave-container::before {
+      height: 18.5px;
+    }
+  }
+
+  .flip {
+    transform: rotate(180deg);
+    margin-bottom: 10rem;
+}
+
+.svg-container {
+	position: relative;
+	width: 100%;
+	height: 21.65rem;
+}
+</style>

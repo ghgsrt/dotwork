@@ -57,9 +57,15 @@
   }
 
   .contact {
+    --primary: var(--clr-secondary);
+    --secondary: var(--clr-primary);
+    --other-secondary: var(--clr-primary);
     display: flex;
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
+    background-color: var(--primary);
+    color: var(--secondary);
+	padding: 3rem 0.75rem;
   }
   .contact > div {
   }
@@ -70,7 +76,7 @@
     /* flex-direction: column; */
   /* }  */
 
-  .contact > * {
+  .contact > *:not(button) {
     flex: 1;
     /* width: 50%; */
   }
@@ -92,5 +98,9 @@
   .contact textarea {
     height: 10rem;
     max-width: 100%;
+  }
+
+  .contact button {
+	flex: unset;
   }
 </style>

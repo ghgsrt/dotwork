@@ -79,9 +79,9 @@ import Image from "./Image.astro";
       a {
         display: contents;
       }
-	  span {
-		position: relative;
-	  }
+      span {
+        position: relative;
+      }
 
       h2 {
         margin: 0;
@@ -131,6 +131,22 @@ import Image from "./Image.astro";
         width: 100%;
       }
 
+      #deez {
+        position: absolute;
+        /* left: 0; */
+        top: 3rem;
+        font-size: 2.75rem;
+        max-height: 0px;
+        height: 100%;
+        border: 0.125rem solid var(--secondary);
+        border-top-color: var(--primary);
+        border-top-width: 0px;
+        border-bottom-left-radius: 1rem;
+        border-bottom-right-radius: 1rem;
+        background-color: var(--primary);
+        transition: max-height 150ms ease-in-out;
+      }
+
       div {
         display: flex;
         flex-direction: column;
@@ -146,4 +162,11 @@ import Image from "./Image.astro";
     </style>
   </header>
   <hr />
+  <hr
+    style={{
+      width: `${import.meta.env.HEADER.length}ch`,
+      left: `calc(50% - ${import.meta.env.HEADER.length}ch / 2)`,
+    }}
+    id="deez"
+  />
 </div>

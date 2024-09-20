@@ -4,16 +4,18 @@ import ImageThing from "./ImageThing.astro";
 
 const stripe = new Stripe(import.meta.env.STRIPE_SK ?? "");
 
-const products = (await stripe.products.list({ active: true })).data;
+const products = (await stripe.products.list({ active: true })).data.reverse();
 const _prices = (await stripe.prices.list()).data;
 const prices: Stripe.Price[] = products.map(
-  (product) => _prices.find((price) => price.product === product.id)!,
+  (product) =>
+    _prices.find((price) => price.id === product.default_price) ??
+    _prices.find((price) => price.product === product.id)!,
 );
 ---
 
 <section>
   {
-    products.reverse().map((product, i) => (
+    products.map((product, i) => (
       <ImageThing
         id={`product-${product.id}`}
         width="720"
@@ -22,7 +24,7 @@ const prices: Stripe.Price[] = products.map(
         link={product.active ? `/shop/${product.name}/` : ""}
         images={product.images}
         alts={product.description}
-		loading="eager"
+        loading="eager"
       >
         <div class="info">
           <h4 class="title floating">
@@ -115,6 +117,9 @@ const prices: Stripe.Price[] = products.map(
     grid-gap: 0.5rem;
     width: 100%;
     height: min-content;
+    padding: 0 0.75rem;
+    padding-bottom: 8rem;
+    padding-top: 2.5rem;
   }
 
   @media (max-width: 1280px) {
@@ -160,7 +165,7 @@ const prices: Stripe.Price[] = products.map(
     opacity: 0;
     transition: opacity 150ms ease-in-out;
     z-index: 3;
-	background-color: red; 
+    background-color: red;
   }
   .product > div:first-child:hover .info {
     opacity: 1;
